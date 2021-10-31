@@ -14,6 +14,7 @@ include_directories(
 file(GLOB SOURCES 
 	src/*.cpp
     src/core/*.cpp
+    src/core/base/*.cpp
     src/core/protocol/*.cpp
     src/utils/*.cpp
 	)

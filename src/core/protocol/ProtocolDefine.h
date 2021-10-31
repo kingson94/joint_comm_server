@@ -1,0 +1,3 @@
+#pragma once
+#define TCP_SERVER_COMP "TCP_SERVER_COMP"
+#define HTTP_SERVER_COMP "HTTP_SERVER_COMP"

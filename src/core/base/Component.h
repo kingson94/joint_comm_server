@@ -1,19 +1,24 @@
 /*
-* File: Protocol.h
-* Class: Protocol
-* Created: 20211024
+* File: Component.h
+* Class: Component
+* Created: 20211031
 * Author: SonTV
 */
 #pragma once
 #include <string>
 
+namespace core
+{
 class Component
 {
 public:
     Component(const std::string &strComponentID);
-    virtual ~Component()
-    {}
+    virtual ~Component();
+    virtual void Run();
+
+    const std::string GetID() const;
     
 protected:
-    std::string strComponentID;
+    std::string m_strComponentID;
 };
+} //namespace core

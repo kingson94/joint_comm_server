@@ -6,12 +6,17 @@
 */
 
 #pragma once
-#include "base/Component.h"
-
+#include "core/base/Component.h"
+namespace core
+{
 namespace protocol
 {
-class TcpServer : public Component
+class TcpServer : public core::Component
 {
-
+public:
+    TcpServer();
+    ~TcpServer();
+    void Run() override;
 };
 } // namespace protocol
+} // namespace core
