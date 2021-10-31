@@ -20,6 +20,11 @@ void Component::Run()
 {
 }
 
+void Component::Init()
+{
+
+}
+
 const std::string Component::GetID() const
 {
     return m_strComponentID;

@@ -15,6 +15,7 @@ public:
     Component(const std::string &strComponentID);
     virtual ~Component();
     virtual void Run();
+    virtual void Init();
 
     const std::string GetID() const;
     

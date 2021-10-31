@@ -6,7 +6,7 @@
         {
             "label": "Build",
             "type": "shell",
-            "command": "./build.sh",
+            "command": "./task.sh -build",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
@@ -16,8 +16,14 @@
         {
             "label": "Rebuild",
             "type": "shell",
-            "command": "./build.sh -rebuild",
+            "command": "./task.sh -clean -build",
             "problemMatcher": []
+        },
+        {
+            "label": "Build - Push",
+            "type": "shell",
+            "command": "./task.sh -build -push",
+            "problemMatcher": [],
         },
         {
             "label": "Run",

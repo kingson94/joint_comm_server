@@ -10,7 +10,6 @@ void SigpipeHanlder(int iSignal)
    
 }
 
-
 int main(int argc, char **argv)
 {
 	struct sigaction stSigAction;

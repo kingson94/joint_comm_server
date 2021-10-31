@@ -23,7 +23,7 @@ namespace protocol
     void TcpServer::Run()
     {
         // Start TCP server
-        std::printf("hello\n");
+        std::printf("TCP run \n");
     }
 }
 }
