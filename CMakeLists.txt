@@ -3,7 +3,9 @@ set(CMAKE_CXX_FLAGS "-std=c++11")
 
 project(joint)
 
-set(3RD_DIR /home/environment/)
+# Variables
+set(3RD_DIR /home/environment)
+
 # Header include
 include_directories(
 	${3RD_DIR}/include
@@ -20,8 +22,8 @@ file(GLOB SOURCES
 	)
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-# Libs
-set(SYS_LIBS pthread glog)
+# System libs
+set(SYS_LIBS pthread)
 foreach (LIB ${SYS_LIBS})
     find_library(RESULT ${LIB})
     if (RESULT)
@@ -31,3 +33,13 @@ foreach (LIB ${SYS_LIBS})
     endif ()
     unset(RESULT CACHE)
 endforeach ()
+
+# 3rd libs
+set(3RD_LIB glog uuid)
+foreach(LIB_NAME ${3RD_LIB})
+    if (EXISTS "${3RD_DIR}/lib/lib${LIB_NAME}.so")
+        target_link_libraries(${PROJECT_NAME} "${3RD_DIR}/lib/lib${LIB_NAME}.so")    
+    else()
+        message(FATAL_ERROR "Lib \"${LIB_NAME}\" not found")
+    endif()
+endforeach()
