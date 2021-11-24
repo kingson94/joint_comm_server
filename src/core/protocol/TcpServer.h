@@ -17,6 +17,7 @@ public:
     TcpServer();
     ~TcpServer();
     void Run() override;
+    void Init() override;
 };
 } // namespace protocol
 } // namespace core

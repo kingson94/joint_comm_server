@@ -1,22 +1,32 @@
 /*
 * File: Thread.h
-* Class: KSThread
+* Class: BaseThread
 * Created: 20211106
 * Author: SonTV
 */
 
 #pragma once
-#include "uuid/uuid.h"
 #include <string>
+#include <thread>
+#include <memory>
 
 namespace core
 {
-class KSThread
+namespace base
 {
-private:
-    std::string strID32;
+class BaseThread
+{
+protected:
+    int m_iThreadID;
+    std::shared_ptr<std::thread> m_pThread;
+
 public:
-    KSThread();
-    ~KSThread();
+    explicit BaseThread(const int &iThreadID);
+    ~BaseThread();
+
+    virtual void Run() = 0;
+    void Start();
+    void Join();
 };
+} // namespace base
 } // namespace core

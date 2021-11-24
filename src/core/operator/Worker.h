@@ -1,0 +1,17 @@
+#pragma once
+#include "core/base/Thread.h"
+
+namespace core
+{
+namespace op
+{
+class Worker : public base::BaseThread
+{
+public:
+    Worker(const int &iThreadID);
+    ~Worker();
+
+    void Run() override;
+};
+} // namespace op
+} // namespace core
