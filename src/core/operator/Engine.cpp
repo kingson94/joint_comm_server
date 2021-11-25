@@ -4,9 +4,10 @@
 #include "util/Utils.h"
 
 #include "service/TcpReadService.h"
+#include "AppDefine.h"
+
 // #include "service/TcpService.h"
-#define DEFAULT_QUEUE_SIZE 1000
-#define DEFAULT_WORKER_COUNT 8 
+
 
 namespace core
 {
@@ -46,11 +47,11 @@ void Engine::Join()
 
 void Engine::Init()
 {
-    cppcms::json::value jConfig;
+    nlohmann::json jConfig;
     if (util::Utils::LoadJsonFromFile(ENGINE_CONFIG_FILE, jConfig) == 0)
     {
-        m_iWorkerCount = jConfig.get<int>("worker_count");
-        m_iQueueSize = jConfig.get<int>("queue_size");
+        m_iWorkerCount = jConfig["worker_count"].get<int>();
+        m_iQueueSize = jConfig["queue_size"].get<int>();
     }
 
     m_pQueueBegin = (base::Task**) new base::Task*[m_iQueueSize];
@@ -86,14 +87,14 @@ void Engine::Run()
 
 void Engine::ConsumeTask()
 {
-    // LOG("[Engine] Consume task");
+    // SLOG(slog::LL_DEBUG, "[Engine] Consume task");
     // Get task
     auto pTask = GetTask();
 
     // Process task
     if (pTask != NULL)
     {
-        // LOG2("[Engine] Got a task has type: %d", pTask->GetType());
+        // SLOG2(slog::LL_DEBUG, "[Engine] Got a task has type: %d", pTask->GetType());
         auto pIter = m_hmService.find(pTask->GetType());
         if (pIter != m_hmService.end())
         {
@@ -103,13 +104,13 @@ void Engine::ConsumeTask()
                 bool bResult = pIter->second->ProcessRequest(pContext);
                 if (!bResult)
                 {
-                    LOG("[Engine] Processing task failed")
+                    SLOG(slog::LL_DEBUG, "[Engine] Processing task failed")
                 }
             }
         }
         else
         {
-            LOG2("[Engine] Receive strange request %d", pTask->GetType());
+            SLOG2(slog::LL_DEBUG, "[Engine] Receive strange request %d", pTask->GetType());
         }
         
         SAFE_DEL(pTask);
@@ -123,7 +124,7 @@ void Engine::PushTask(core::base::Task *pTask)
     std::unique_lock<std::mutex> lckWrite(m_mtxQueueWrite);
     if (m_pNextTask == m_pFirstTask)
     {
-        // LOG("[Engine] Wait when queue is full");
+        // SLOG(slog::LL_DEBUG, "[Engine] Wait when queue is full");
         // Wait here if queue is full
         m_cvQueueFull.wait(lckWrite);
     }
@@ -131,11 +132,11 @@ void Engine::PushTask(core::base::Task *pTask)
     // Check queue is empty to notify empty condition
     if (m_pFirstTask == m_pLastTask)
     {
-        // LOG("[Engine] Queue empty before");
+        // SLOG(slog::LL_DEBUG, "[Engine] Queue empty before");
         bQueueIsEmpty = true;
     }
 
-    // LOG2("[Engine] Pushed task has type: %d", pTask->GetType());
+    // SLOG2(slog::LL_DEBUG, "[Engine] Pushed task has type: %d", pTask->GetType());
     // Write task to the last
     *m_pLastTask = pTask;
     // Move pointer to the next write
@@ -145,14 +146,14 @@ void Engine::PushTask(core::base::Task *pTask)
     // Round the queue
     if (m_pNextTask == m_pQueueEnd)
     {
-        // LOG("[Engine] Push task round the queue");
+        // SLOG(slog::LL_DEBUG, "[Engine] Push task round the queue");
         m_pNextTask = m_pQueueBegin;
     }
 
     // Notify empty condition if any waiting
     if (bQueueIsEmpty)
     {
-        // LOG("[Engine] Notify to empty waiter");
+        // SLOG(slog::LL_DEBUG, "[Engine] Notify to empty waiter");
         m_cvQueueEmpty.notify_one();
     }
 }
@@ -166,14 +167,14 @@ core::base::Task* Engine::GetTask()
     if (m_pFirstTask == m_pLastTask)
     {
         // Wait here if queue is empty
-        // LOG("[Engine] Wait queue empty");
+        // SLOG(slog::LL_DEBUG, "[Engine] Wait queue empty");
         m_cvQueueEmpty.wait(lckRead);
     }
 
     // Check queue is full to notify full condition
     if (m_pFirstTask == m_pNextTask)
     {
-        // LOG("[Engine] Queue is full before");
+        // SLOG(slog::LL_DEBUG, "[Engine] Queue is full before");
         bQueueIsFull = true;
     }
 
@@ -185,7 +186,7 @@ core::base::Task* Engine::GetTask()
     // Round the queue
     if (m_pFirstTask == m_pQueueEnd)
     {
-        // LOG("[Engine] Get task round the queue");
+        // SLOG(slog::LL_DEBUG, "[Engine] Get task round the queue");
         m_pFirstTask = m_pQueueBegin;
     }
 
@@ -195,7 +196,7 @@ core::base::Task* Engine::GetTask()
         m_cvQueueFull.notify_one();
     }
 
-    // LOG2("[Engine] Got a task has type: %d", pRetTask->GetType());
+    // SLOG2(slog::LL_DEBUG, "[Engine] Got a task has type: %d", pRetTask->GetType());
     return pRetTask;
 }
 } // namespace op

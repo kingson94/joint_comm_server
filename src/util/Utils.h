@@ -6,51 +6,16 @@
 */
 #pragma once
 #include <string>
-#include "Define.h"
+#include "log/LogDefine.h"
 #include <cstdarg>
-#include "cppcms/json.h"
+#include "nlohmann/json.hpp"
 #include <fstream>
-#include <sstream>
+
 namespace util
 {
 class Utils;
 }
 
-#ifndef MAX_LOG_SIZE
-#define MAX_LOG_SIZE 2048
-#endif // MAX_LOG_SIZE
-
-#ifndef LOG
-#define LOG(x) \
-    { \
-        std::string strTmp(__FILE__); \
-        std::string strRelativeFilePath = strTmp; \
-        size_t iLastSlashPos = strTmp.rfind('/'); \
-        if (iLastSlashPos != std::string::npos) \
-        { \
-            strRelativeFilePath = strTmp.substr(iLastSlashPos + 1); \
-        } \
-        std::printf("%s:%d] %s\n", strRelativeFilePath.c_str(), __LINE__, x); \
-    } \
-
-#endif // LOG
-
-#ifndef LOG2
-#define LOG2(x, ...) \
-    { \
-        std::string strTmp(__FILE__); \
-        std::string strRelativeFilePath = strTmp; \
-        std::string strDataFilled = ""; \
-        size_t iLastSlashPos = strTmp.rfind('/'); \
-        util::Utils::LogBuilder(strDataFilled, x, ##__VA_ARGS__); \
-        if (iLastSlashPos != std::string::npos) \
-        { \
-            strRelativeFilePath = strTmp.substr(iLastSlashPos + 1); \
-        } \
-        std::printf("%s:%d] %s\n", strRelativeFilePath.c_str(), __LINE__, strDataFilled.c_str()); \
-    } \
-
-#endif // LOG2
 
 namespace util
 {
@@ -70,27 +35,26 @@ public:
         va_end(args);
     }
 
-    static inline int LoadJsonFromFile(const std::string &strFile, cppcms::json::value &jValue)
+    static inline int LoadJsonFromFile(const std::string &strFile, nlohmann::json &jValue)
     {
         std::ifstream ifStream(strFile.c_str());
-        if (!jValue.load(ifStream, true))
+        ifStream >> jValue;
+        if (jValue.empty())
         {
-            ifStream.close();
             return -1;
         }
         
-        ifStream.close();
         return 0;
     }
 
-    static inline int StringToJson(const std::string &strData, cppcms::json::value &jValue)
+    static inline int StringToJson(const std::string &strData, nlohmann::json &jValue)
     {
-        std::istringstream issBuffer(strData);
-        if (!jValue.load(issBuffer, true))
+        jValue = nlohmann::json::parse(strData);
+        if (jValue.empty())
         {
             return -1;
         }
-
+        
         return 0;
     }
 };

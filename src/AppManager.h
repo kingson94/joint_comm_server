@@ -11,8 +11,6 @@
 #include "profile/Profile.h"
 #include "util/Utils.h"
 
-#define RUNNING_MODE_SERVER 0
-#define RUNNING_MODE_CLIENT 1
 namespace core
 {
 class AppManager

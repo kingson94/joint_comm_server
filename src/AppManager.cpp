@@ -6,10 +6,12 @@
 */
 
 #include "AppManager.h"
-#include "util/Define.h"
+#include "log/LogDefine.h"
 #include "tcp/TcpServer.h"
 #include "tcp/TcpClient.h"
 #include "core/operator/Engine.h"
+#include <iostream>
+#include "AppDefine.h"
 
 namespace core
 {
@@ -93,13 +95,13 @@ void AppManager::RegisterComponents()
 {
     if (m_iRunningMode == RUNNING_MODE_SERVER)
     {
-        LOG("[App] Register server");
+        SLOG(slog::LL_DEBUG, "[App] Register server");
         core::base::Component *pTcpServer = new tcp::TcpServer();
         m_hmComponent[pTcpServer->GetID()] = pTcpServer;
     }
     else if (m_iRunningMode == RUNNING_MODE_CLIENT)
     {
-        LOG("[App] Register client");
+        SLOG(slog::LL_DEBUG, "[App] Register client");
         core::base::Component *pTcpClient = new tcp::TcpClient();
         m_hmComponent[pTcpClient->GetID()] = pTcpClient;
     }

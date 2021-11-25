@@ -13,7 +13,7 @@ bool TcpService::ProcessRequest(core::base::Context *pContext)
 
     if (pConnection)
     {
-        LOG2("Receive message from client: %s", strMsgContent.c_str());
+        SLOG2(slog::LL_DEBUG, "Receive message from client: %s", strMsgContent.c_str());
         // Response here if need
         return true;
     }

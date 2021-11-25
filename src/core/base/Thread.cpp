@@ -20,7 +20,7 @@ void BaseThread::Start()
     }
     else
     {
-        LOG("Cannot init thread multiple times");
+        SLOG(slog::LL_DEBUG, "Cannot init thread multiple times");
     }
 }
 

@@ -58,7 +58,7 @@ int Connection::WriteSocket(const std::string &strData)
 
     if (!szPacket)
     {
-        LOG("[Connection] Create packet failed");
+        SLOG(slog::LL_DEBUG, "[Connection] Create packet failed");
         return -1;
     }
 
@@ -80,7 +80,7 @@ int Connection::WriteSocket(const std::string &strData)
 				iTryTimes--;
 				if (iTryTimes < 0)
 				{
-                    LOG2("[Connection] Tried times reach zero");
+                    SLOG2(slog::LL_DEBUG, "[Connection] Tried times reach zero");
                     return -1;
 				}
 				usleep(100);
@@ -127,7 +127,7 @@ bool Connection::ReadSocket()
     unsigned char szHeader[TCP_HEADER_SIZE];
     memset(szHeader, 0x00, sizeof(szHeader));
 
-    // LOG2("[Connection] Socket value %d", m_iFD);
+    // SLOG2(slog::LL_DEBUG, "[Connection] Socket value %d", m_iFD);
     while (true)
     {
         if (iReceived < TCP_HEADER_SIZE)
@@ -135,7 +135,7 @@ bool Connection::ReadSocket()
             int iReadCount = read(m_iFD, szHeader, TCP_HEADER_SIZE - iReceived);
             if (iReadCount == 0)
             {
-                LOG2("[Connection] Close connection %d", m_iFD);
+                SLOG2(slog::LL_DEBUG, "[Connection] Close connection %d", m_iFD);
                 if (m_pTcpServer)
                 {
                     m_pTcpServer->CloseConnection(m_iFD);
@@ -146,7 +146,7 @@ bool Connection::ReadSocket()
             {
                 if (errno != EAGAIN)
                 {
-                    LOG2("[Connection] Close connection %d", m_iFD);
+                    SLOG2(slog::LL_DEBUG, "[Connection] Close connection %d", m_iFD);
                     if (m_pTcpServer)
                     {
                         m_pTcpServer->CloseConnection(m_iFD);
@@ -165,8 +165,8 @@ bool Connection::ReadSocket()
             {
                 if (szHeader[0] != MAGIC_PACKET_BYTE || szHeader[1] != MAGIC_PACKET_BYTE)
 				{
-					LOG("[Connection] Magic bytes are not matched");
-					LOG2("[Connection] Close connection: %d", m_iFD);
+					SLOG(slog::LL_DEBUG, "[Connection] Magic bytes are not matched");
+					SLOG2(slog::LL_DEBUG, "[Connection] Close connection: %d", m_iFD);
 
 					if (m_pTcpServer)
                     {
@@ -187,7 +187,7 @@ bool Connection::ReadSocket()
             int iReadCount = read(m_iFD, szPayload, nPacketSize - iReceived);
             if (iReadCount == 0)
             {
-                LOG2("[Connection] Close connection %d", m_iFD);
+                SLOG2(slog::LL_DEBUG, "[Connection] Close connection %d", m_iFD);
                 if (m_pTcpServer)
                 {
                     m_pTcpServer->CloseConnection(m_iFD);
@@ -198,7 +198,7 @@ bool Connection::ReadSocket()
             {
                 if (errno != EAGAIN)
                 {
-                    LOG2("[Connection] Close connection %d", m_iFD);
+                    SLOG2(slog::LL_DEBUG, "[Connection] Close connection %d", m_iFD);
                     if (m_pTcpServer)
                     {
                         m_pTcpServer->CloseConnection(m_iFD);
@@ -215,19 +215,19 @@ bool Connection::ReadSocket()
 
             if (iReceived == nPacketSize)
             {
-                cppcms::json::value jValue;
+                nlohmann::json jValue;
                 std::string strReadData = std::string(szPayload, nPacketSize - TCP_HEADER_SIZE);
                 try
                 {
                     if (util::Utils::StringToJson(strReadData, jValue) != 0)
                     {
-                        LOG2("[Connection] Cannot parse data: %s", strReadData.c_str());
+                        SLOG2(slog::LL_DEBUG, "[Connection] Cannot parse data: %s", strReadData.c_str());
                     }
                     else
                     {
-                        LOG2("[Connection] Receive message from: %s, content: %s"
-                        , jValue.get<std::string>("author").c_str()
-                        , jValue.get<std::string>("message").c_str());
+                        SLOG2(slog::LL_DEBUG, "[Connection] Receive message from: %s, content: %s"
+                        , ((std::string)jValue["author"]).c_str()
+                        , ((std::string)jValue["message"]).c_str());
                     }
 
                     if (szPayload)
@@ -236,9 +236,9 @@ bool Connection::ReadSocket()
                         szPayload = NULL;
                     }
                 }
-                catch(const std::exception& ex)
+                catch (const std::exception& ex)
                 {
-                    LOG2("[Connection] Error: %s", ex.what());
+                    SLOG2(slog::LL_DEBUG, "[Connection] Error: %s", ex.what());
                     if (szPayload)
                     {
                         free(szPayload);
@@ -246,7 +246,7 @@ bool Connection::ReadSocket()
                     }
                 }
                 
-                // LOG2("[Connection] Receive message from client: %s", szPayload);
+                // SLOG2(slog::LL_DEBUG, "[Connection] Receive message from client: %s", szPayload);
                 // PuskTaskProcessService(strData);
                 return true;
             }

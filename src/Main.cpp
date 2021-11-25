@@ -13,14 +13,13 @@
 #define BUILD_MINOR_VERSION "0"
 #endif // BUILD_MINOR_VERSION
 #ifndef BUILD_PATCH_VERSION
-#define BUILD_PATCH_VERSION "2. Add more options to input args"
+#define BUILD_PATCH_VERSION "0. Start program"
 #endif // BUILD_PATCH_VERSION
-
 using namespace std;
 
 void SigpipeHanlder(int iSignal)
 {
-   LOG2("[App] Receive signal: %d", iSignal);
+   SLOG2(slog::LL_DEBUG, "[App] Receive signal: %d", iSignal);
 }
 
 int main(int argc, char **argv)
@@ -85,7 +84,7 @@ int main(int argc, char **argv)
 
 		if (iRunningMode < 0)
 		{
-			LOG2("[App] Running mode invalid. Run with option \"--help\" for more info.");
+			SLOG2(slog::LL_DEBUG, "[App] Running mode invalid. Run with option \"--help\" for more info.");
 		}
 	}
 
@@ -165,6 +164,6 @@ int main(int argc, char **argv)
 		// Server is a read only app =))
 	}
 
-	LOG("[App] Application stopped");
+	SLOG(slog::LL_DEBUG, "[App] Application stopped");
 	return 0;
 }

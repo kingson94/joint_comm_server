@@ -6,6 +6,7 @@
 #include <cstring>
 #include <unistd.h>
 #include "tcp/Connection.h"
+#include "AppDefine.h"
 
 namespace tcp
 {
@@ -24,13 +25,13 @@ void TcpClient::Run()
     {
         if (Connect(m_strServerHost, m_iServerPort) == true)
         {
-            LOG2("[TcpClient] Connected to host: %s port: %d", m_strServerHost.c_str(), m_iServerPort);
+            SLOG2(slog::LL_DEBUG, "[TcpClient] Connected to host: %s port: %d", m_strServerHost.c_str(), m_iServerPort);
             m_pLauncher = new TcpClientLauncher(102, this);
             m_pLauncher->Start();
         }
         else
         {
-            LOG2("[TcpClient] Cannot connect to server: %s, port: %d", m_strServerHost.c_str(), m_iServerPort);
+            SLOG2(slog::LL_DEBUG, "[TcpClient] Cannot connect to server: %s, port: %d", m_strServerHost.c_str(), m_iServerPort);
         }
     }
 }
@@ -46,7 +47,7 @@ bool TcpClient::Connect(const std::string &strHost, const int &iPort)
     iConnectedFD = socket(AF_INET, SOCK_STREAM, 0);
     if (iConnectedFD == -1)
     {
-        LOG("[TcpClient] Cannot create socket");
+        SLOG(slog::LL_DEBUG, "[TcpClient] Cannot create socket");
         return false;
     }
 
@@ -55,7 +56,7 @@ bool TcpClient::Connect(const std::string &strHost, const int &iPort)
     stSocketAddress.sin_family = AF_INET;
     if (strHost.empty())
     {
-        LOG("[TcpClient] Hostname is empty");
+        SLOG(slog::LL_DEBUG, "[TcpClient] Hostname is empty");
         return false;
     }
 
@@ -66,14 +67,14 @@ bool TcpClient::Connect(const std::string &strHost, const int &iPort)
     iResult = connect(iConnectedFD, (struct sockaddr*) &stSocketAddress, sizeof(stSocketAddress));
     if (iResult != 0)
     {
-        LOG2("[TcpClient] Cannot bind socket with address. Error: %d", errno);
+        SLOG2(slog::LL_DEBUG, "[TcpClient] Cannot connect to address. Error: %d", errno);
         return false;
     }
 
     auto pConnection = std::make_shared<Connection>(iConnectedFD);
     if (!pConnection)
     {
-        LOG2("[TcpClient] Cannot create connection on fd: %d", iConnectedFD);
+        SLOG2(slog::LL_DEBUG, "[TcpClient] Cannot create connection on fd: %d", iConnectedFD);
         close(iConnectedFD);
     }
 
@@ -95,11 +96,11 @@ void TcpClient::SendMessage(const std::string &strContent)
                 int iWrittenSize = pIter.second->WriteSocket(strContent);
                 if (iWrittenSize > 0)
                 {
-                    LOG2("[TcpClient] Write socket %d total size %d", m_iClientFD, iWrittenSize);
+                    SLOG2(slog::LL_DEBUG, "[TcpClient] Write socket %d total size %d", m_iClientFD, iWrittenSize);
                 }
                 else
                 {
-                    LOG2("[TcpClient] Write socket %d failed", m_iClientFD);
+                    SLOG2(slog::LL_DEBUG, "[TcpClient] Write socket %d failed", m_iClientFD);
                 }
             }
         }
@@ -108,21 +109,21 @@ void TcpClient::SendMessage(const std::string &strContent)
 
 void TcpClient::AttachAuthortoMessage(const std::string &strAuthorName, const std::string &strMessageIn, std::string &strMessageOut)
 {
-    cppcms::json::value jMessage;
-    jMessage.set<std::string>("author", strAuthorName);
-    jMessage.set<std::string>("message", strMessageIn);
-    strMessageOut = jMessage.save(cppcms::json::compact);
+    nlohmann::json jMessage;
+    jMessage["author"] = strAuthorName;
+    jMessage["message"] = strMessageIn;
+    strMessageOut = jMessage.dump(4);
 }
 
 void TcpClient::Init()
 {
     Component::Init();
     // Load local config
-    cppcms::json::value jConfig;
+    nlohmann::json jConfig;
     if (util::Utils::LoadJsonFromFile(TCP_CLIENT_CONFIG_FILE, jConfig) == 0)
     {
-        m_strServerHost = jConfig.get<std::string>("host");
-        m_iServerPort = jConfig.get<int>("port");
+        m_strServerHost = jConfig["host"].get<std::string>();
+        m_iServerPort = jConfig["port"].get<int>();
     }
 }
 

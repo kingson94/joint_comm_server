@@ -1,2 +1,2 @@
 cd /opt/joint/
-./joint
+./joint -server

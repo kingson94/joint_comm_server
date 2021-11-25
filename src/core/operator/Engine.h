@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include "service/TcpReadService.h"
 // #include "service/TcpService.h"
+#include <memory>
 
 #define ENGINE_COMP "ENGINE_COMP"
 
