@@ -6,7 +6,7 @@
 */
 #pragma once
 #include <string>
-#include <mutex>
+#include "boost/thread/mutex.hpp"
 #include <memory>
 
 #define TCP_HEADER_SIZE 4
@@ -28,7 +28,7 @@ class Connection
 {
 private:
     int m_iFD;
-    std::mutex m_mtxWriteSocket;
+    boost::mutex m_mtxWriteSocket;
     TcpServer* m_pTcpServer;
     core::op::Engine* m_pEngine;
 

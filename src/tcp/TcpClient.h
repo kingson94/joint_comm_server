@@ -8,8 +8,8 @@
 #include "core/base/Component.h"
 #include "core/base/Thread.h"
 #include <unordered_map>
-#include <mutex>
 #include <tcp/Connection.h>
+#include "boost/thread/mutex.hpp"
 
 namespace tcp
 {
@@ -23,7 +23,7 @@ private:
     std::string m_strServerHost;
     int m_iServerPort;
 
-    std::mutex m_mtxConnectionWrite;
+    boost::mutex m_mtxConnectionWrite;
     std::unordered_map<int, ConnectionPtr> m_hmConnection;
 
 private:

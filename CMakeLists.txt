@@ -24,7 +24,7 @@ file(GLOB SOURCES
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 # System libs
-set(SYS_LIBS pthread)
+set(SYS_LIBS pthread boost_thread)
 foreach (LIB ${SYS_LIBS})
     find_library(RESULT ${LIB})
     if (RESULT)

@@ -84,9 +84,9 @@ bool TcpClient::Connect(const std::string &strHost, const int &iPort)
         close(iConnectedFD);
     }
 
-    std::unique_lock<std::mutex> lckConnectionWrite(m_mtxConnectionWrite);
+    boost::mutex::scoped_lock lckConnectionWrite(m_mtxConnectionWrite);
     m_hmConnection[iConnectedFD] = pConnection;
-     m_iClientFD = iConnectedFD;
+    m_iClientFD = iConnectedFD;
     
     return true;
 }

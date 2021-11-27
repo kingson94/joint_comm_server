@@ -27,7 +27,7 @@ private:
     std::string m_strHost;
     int m_iPort;
 
-    std::mutex m_mtxConnectionWrite;
+    boost::mutex m_mtxConnectionWrite;
     std::unordered_map<int, ConnectionPtr> m_hmConnection;
     std::unordered_set<int> m_setAcceptedFD;
 

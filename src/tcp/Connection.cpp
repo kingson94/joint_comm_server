@@ -51,7 +51,7 @@ int Connection::GetSocket()
 
 int Connection::WriteSocket(const std::string &strData)
 {
-    std::unique_lock<std::mutex> lckWriteSock(m_mtxWriteSocket);
+    boost::mutex::scoped_lock lckWriteSock(m_mtxWriteSocket);
 
     int iPacketSize = (int) (strData.size() + TCP_HEADER_SIZE);
     char* szPacket =  new char[iPacketSize];

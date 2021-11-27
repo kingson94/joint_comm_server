@@ -72,7 +72,7 @@ void TcpServer::CloseConnection(const int &iFD)
         return;
     }
 
-    std::unique_lock<std::mutex> lckConnectionWrite(m_mtxConnectionWrite);
+    boost::mutex::scoped_lock lckConnectionWrite(m_mtxConnectionWrite);
     iResult = close(iFD);
     if (iResult == 0)
     {
@@ -142,7 +142,7 @@ void TcpServer::Listen()
                         break;
                     }
 
-                    std::unique_lock<std::mutex> lckConnectionWrite;
+                    boost::mutex::scoped_lock lckConnectionWrite(m_mtxConnectionWrite);
                     m_hmConnection[iClientFD] = pConnection;
                     // pConnection->PuskTaskReadSocket();
                 }
