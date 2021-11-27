@@ -1,4 +1,9 @@
 /*
+* File: TcpService.cpp
+* Class: TcpService
+* Created: 20211127
+* Author: SonTV
+*/
 #include "service/TcpService.h"
 #include "tcp/TcpContext.h"
 #include "tcp/Connection.h"
@@ -20,4 +25,3 @@ bool TcpService::ProcessRequest(core::base::Context *pContext)
     return false;
 }
 } // namespace service
-*/

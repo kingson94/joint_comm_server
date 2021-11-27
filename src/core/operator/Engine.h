@@ -50,7 +50,7 @@ private:
     int m_iWorkerCount;
     int m_iQueueSize;
     std::vector<WorkerPtr> m_vWorker;
-    std::unordered_map<int, core::base::Service*> m_hmService;
+    std::unordered_map<int, ServicePtr> m_hmService;
 
 public:
     Engine();
@@ -63,7 +63,7 @@ public:
     void PushTask(core::base::Task *pTask);
     core::base::Task* GetTask();
 
-    void RegisterService(core::base::Service *pService);
+    void RegisterService(ServicePtr pService);
 };
 } // namespace op
 } // namespace core

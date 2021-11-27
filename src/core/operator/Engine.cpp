@@ -11,8 +11,7 @@
 
 #include "service/TcpReadService.h"
 #include "AppDefine.h"
-
-// #include "service/TcpService.h"
+#include "service/TcpService.h"
 
 namespace core
 {
@@ -23,21 +22,16 @@ Engine::Engine() : Component(ENGINE_COMP)
 , m_pQueueBegin(NULL), m_pQueueEnd(NULL), m_iWorkerCount(DEFAULT_WORKER_COUNT)
 , m_iQueueSize(DEFAULT_QUEUE_SIZE)
 {
-    core::base::Service *pReadService = new service::TcpReadService();
-    // core::base::Service *pTcpService = new service::TcpService();
+    ServicePtr pReadService = std::make_shared<service::TcpReadService>();
+    ServicePtr pTcpService = std::make_shared<service::TcpService>();
 
     RegisterService(pReadService);
-    // RegisterService(pTcpService);
+    RegisterService(pTcpService);
 }
 
 Engine::~Engine()
 {
     SAFE_DEL(m_pQueueBegin);
-
-    for (auto &ptService : m_hmService)
-    {
-        SAFE_DEL(ptService.second);
-    }
 
     // for (auto &pWorker : m_vWorker)
     // {
@@ -73,7 +67,7 @@ void Engine::Init()
     }
 }
 
-void Engine::RegisterService(core::base::Service *pService)
+void Engine::RegisterService(ServicePtr pService)
 {
     if (pService)
     {
@@ -92,14 +86,12 @@ void Engine::Run()
 
 void Engine::ConsumeTask()
 {
-    // SLOG(slog::LL_DEBUG, "[OP] Consume task");
     // Get task
     auto pTask = GetTask();
 
     // Process task
     if (pTask != NULL)
     {
-        // SLOG2(slog::LL_DEBUG, "[OP] Got a task has type: %d", pTask->GetType());
         auto pIter = m_hmService.find(pTask->GetType());
         if (pIter != m_hmService.end())
         {
@@ -129,7 +121,6 @@ void Engine::PushTask(core::base::Task *pTask)
     std::unique_lock<std::mutex> lckWrite(m_mtxQueueWrite);
     if (m_pNextTask == m_pFirstTask)
     {
-        // SLOG(slog::LL_DEBUG, "[OP] Wait when queue is full");
         // Wait here if queue is full
         m_cvQueueFull.wait(lckWrite);
     }
@@ -137,11 +128,9 @@ void Engine::PushTask(core::base::Task *pTask)
     // Check queue is empty to notify empty condition
     if (m_pFirstTask == m_pLastTask)
     {
-        // SLOG(slog::LL_DEBUG, "[OP] Queue empty before");
         bQueueIsEmpty = true;
     }
 
-    // SLOG2(slog::LL_DEBUG, "[OP] Pushed task has type: %d", pTask->GetType());
     // Write task to the last
     *m_pLastTask = pTask;
     // Move pointer to the next write
@@ -151,14 +140,12 @@ void Engine::PushTask(core::base::Task *pTask)
     // Round the queue
     if (m_pNextTask == m_pQueueEnd)
     {
-        // SLOG(slog::LL_DEBUG, "[OP] Push task round the queue");
         m_pNextTask = m_pQueueBegin;
     }
 
     // Notify empty condition if any waiting
     if (bQueueIsEmpty)
     {
-        // SLOG(slog::LL_DEBUG, "[OP] Notify to empty waiter");
         m_cvQueueEmpty.notify_one();
     }
 }
@@ -172,14 +159,12 @@ core::base::Task* Engine::GetTask()
     if (m_pFirstTask == m_pLastTask)
     {
         // Wait here if queue is empty
-        // SLOG(slog::LL_DEBUG, "[OP] Wait queue empty");
         m_cvQueueEmpty.wait(lckRead);
     }
 
     // Check queue is full to notify full condition
     if (m_pFirstTask == m_pNextTask)
     {
-        // SLOG(slog::LL_DEBUG, "[OP] Queue is full before");
         bQueueIsFull = true;
     }
 
@@ -191,7 +176,6 @@ core::base::Task* Engine::GetTask()
     // Round the queue
     if (m_pFirstTask == m_pQueueEnd)
     {
-        // SLOG(slog::LL_DEBUG, "[OP] Get task round the queue");
         m_pFirstTask = m_pQueueBegin;
     }
 
@@ -201,7 +185,6 @@ core::base::Task* Engine::GetTask()
         m_cvQueueFull.notify_one();
     }
 
-    // SLOG2(slog::LL_DEBUG, "[OP] Got a task has type: %d", pRetTask->GetType());
     return pRetTask;
 }
 } // namespace op

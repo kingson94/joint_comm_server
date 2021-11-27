@@ -6,6 +6,8 @@
 */
 #pragma once
 #include "core/base/Context.h"
+#include "AppDefine.h"
+
 namespace core
 {
 namespace base
@@ -23,6 +25,7 @@ public:
 
     ~Task()
     {
+        SAFE_DEL(m_pContext);
     }
 
     int GetType()

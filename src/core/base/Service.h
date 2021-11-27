@@ -6,6 +6,7 @@
 */
 #pragma once
 #include "Context.h"
+#include <memory>
 
 namespace core
 {
@@ -32,6 +33,7 @@ public:
 
 	virtual bool ProcessRequest(Context *pContext) = 0;
 };
-
 }  // namespace base
 }  // namespace core
+
+typedef std::shared_ptr<core::base::Service> ServicePtr;
