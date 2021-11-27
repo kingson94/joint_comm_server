@@ -7,7 +7,7 @@
 #pragma once
 #include "core/base/Service.h"
 #include "util/Utils.h"
-#define TCP_SERVICE_TYPE 1
+#include "AppDefine.h"
 
 namespace core
 {

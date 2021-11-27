@@ -45,6 +45,7 @@ public:
     void SendMessage(const std::string &strContent);
 
     void CloseConnection(const int &iFD);
+    ConnectionPtr GetConnection(const int &iFD);
     void Join();
 };
 

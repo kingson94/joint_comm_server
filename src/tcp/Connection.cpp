@@ -103,18 +103,16 @@ int Connection::WriteSocket(const std::string &strData)
     return iTotalSentByte;
 }
 
-// void Connection::PuskTaskProcessService(const std::string &strReadData)
-// {
-// 	auto pTcpContext = new TcpContext(strReadData, std::make_shared<Connection>(m_iFD));
-// 	auto pTask = new core::base::Task(TCP_SERVICE_TYPE, pTcpContext);
-
-//     core::AppManager *pApp = core::AppManager::GetInstance();
-//     if (pApp)
-//     {
-//         core::op::Engine *pEngine = (core::op::Engine*) pApp->GetComponent(ENGINE_COMP);
-// 	    pEngine->PushTask(pTask);
-//     }
-// }
+void Connection::PuskTaskProcessService(const std::string &strReadData)
+{	
+    if (m_pEngine)
+    {
+        ConnectionPtr pConnection = m_pTcpServer->GetConnection(m_iFD);
+        core::base::Context *pTcpContext = new TcpContext(strReadData, pConnection);
+        core::base::Task *pTask = new core::base::Task(TCP_SERVICE_TYPE, pTcpContext);
+        m_pEngine->PushTask(pTask);
+    }
+}
 
 bool Connection::ReadSocket()
 {
@@ -124,7 +122,6 @@ bool Connection::ReadSocket()
     unsigned char szHeader[TCP_HEADER_SIZE];
     memset(szHeader, 0x00, sizeof(szHeader));
 
-    // SLOG2(slog::LL_DEBUG, "[Connection] Socket value %d", m_iFD);
     while (true)
     {
         if (iReceived < TCP_HEADER_SIZE)
@@ -175,7 +172,7 @@ bool Connection::ReadSocket()
                 nPacketSize = (szHeader[2] << 8) + szHeader[3];
                 if (nPacketSize > 0)
                 {
-                    szPayload = (char*) malloc(nPacketSize - TCP_HEADER_SIZE);
+                    szPayload = new char[nPacketSize - TCP_HEADER_SIZE];
                 }
             }
         }
@@ -212,39 +209,11 @@ bool Connection::ReadSocket()
 
             if (iReceived == nPacketSize)
             {
-                nlohmann::json jValue;
                 std::string strReadData = std::string(szPayload, nPacketSize - TCP_HEADER_SIZE);
-                try
-                {
-                    if (util::Utils::StringToJson(strReadData, jValue) != 0)
-                    {
-                        SLOG2(slog::LL_DEBUG, "[Connection] Cannot parse data: %s", strReadData.c_str());
-                    }
-                    else
-                    {
-                        SLOG2(slog::LL_DEBUG, "[Connection] Receive message from: %s, content: %s"
-                        , ((std::string)jValue["author"]).c_str()
-                        , ((std::string)jValue["message"]).c_str());
-                    }
+                // SLOG2(slog::LL_DEBUG, "[Connection] Receive message from client: %s", strReadData.c_str());
+                PuskTaskProcessService(strReadData);
 
-                    if (szPayload)
-                    {
-                        free(szPayload);
-                        szPayload = NULL;
-                    }
-                }
-                catch (const std::exception& ex)
-                {
-                    SLOG2(slog::LL_DEBUG, "[Connection] Error: %s", ex.what());
-                    if (szPayload)
-                    {
-                        free(szPayload);
-                        szPayload = NULL;
-                    }
-                }
-                
-                // SLOG2(slog::LL_DEBUG, "[Connection] Receive message from client: %s", szPayload);
-                // PuskTaskProcessService(strData);
+                SAFE_DEL(szPayload);
                 return true;
             }
         }

@@ -12,16 +12,16 @@ namespace service
 {
 bool TcpService::ProcessRequest(core::base::Context *pContext)
 {
-    tcp::TcpContext *pTcpContext = (tcp::TcpContext*) pContext;
-    auto pConnection = pTcpContext->GetConnection();
-    std::string strMsgContent = pTcpContext->GetData();
+    // tcp::TcpContext *pTcpContext = (tcp::TcpContext*) pContext;
+    // auto pConnection = pTcpContext->GetConnection();
+    // std::string strMsgContent = pTcpContext->GetData();
 
-    if (pConnection)
-    {
-        SLOG2(slog::LL_DEBUG, "Receive message from client: %s", strMsgContent.c_str());
-        // Response here if need
-        return true;
-    }
-    return false;
+    // if (pConnection)
+    // {
+    //     SLOG2(slog::LL_DEBUG, "Receive message from client: %s", strMsgContent.c_str());
+    //     // Response here if need
+    //     return true;
+    // }
+    return true;
 }
 } // namespace service

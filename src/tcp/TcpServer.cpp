@@ -209,6 +209,16 @@ int TcpServer::OpenConnection(const std::string &strHost, const int &iPort)
     return 0;
 }
 
+ConnectionPtr TcpServer::GetConnection(const int &iFD)
+{
+    auto pIterConn = m_hmConnection.find(iFD);
+    if (pIterConn != m_hmConnection.end())
+    {
+        return pIterConn->second;
+    }
+    return NULL;
+}
+
 void TcpServer::Join()
 {
     m_pLauncher->Join();

@@ -11,8 +11,6 @@
 #include <mutex>
 #include <tcp/Connection.h>
 
-#define TCP_CLIENT_COMP "TCP_CLIENT_COMP"
-
 namespace tcp
 {
 class TcpClientLauncher;

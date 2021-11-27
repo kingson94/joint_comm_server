@@ -92,6 +92,8 @@ void AppManager::SendMessageToEndpoint(const std::string &strMessage)
 
 void AppManager::RegisterComponents()
 {
+    std::shared_ptr<core::op::Engine> pEngine = std::make_shared<core::op::Engine>();
+    m_hmComponent[pEngine->GetID()] = pEngine;
     if (m_iRunningMode == RUNNING_MODE_SERVER)
     {
         SLOG(slog::LL_DEBUG, "[App] Register server");
@@ -104,9 +106,6 @@ void AppManager::RegisterComponents()
         std::shared_ptr<tcp::TcpClient> pTcpClient = std::make_shared<tcp::TcpClient>();
         m_hmComponent[pTcpClient->GetID()] = pTcpClient;
     }
-
-    std::shared_ptr<core::op::Engine> pEngine = std::make_shared<core::op::Engine>();
-    m_hmComponent[pEngine->GetID()] = pEngine;
 }
 
 ComponentPtr AppManager::GetComponent(const std::string &strComponentID)

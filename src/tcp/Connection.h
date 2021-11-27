@@ -38,7 +38,7 @@ public:
     int GetSocket();
 
     void PuskTaskReadSocket();
-    // void PuskTaskProcessService(const std::string &strReadData);
+    void PuskTaskProcessService(const std::string &strReadData);
     bool ReadSocket();
     int WriteSocket(const std::string &strData);
 

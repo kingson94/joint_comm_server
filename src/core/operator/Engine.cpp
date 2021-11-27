@@ -88,7 +88,7 @@ void Engine::ConsumeTask()
 {
     // Get task
     auto pTask = GetTask();
-
+    SLOG2(slog::LL_DEBUG, "sontv get task: %d", pTask->GetType());
     // Process task
     if (pTask != NULL)
     {
@@ -116,6 +116,8 @@ void Engine::ConsumeTask()
 
 void Engine::PushTask(core::base::Task *pTask)
 {
+    std::thread::id id = std::this_thread::get_id();
+    SLOG2(slog::LL_DEBUG, "sontv push task: %d thread 0x%x", pTask->GetType(), id);
     bool bQueueIsEmpty = false;
     // Enqueue
     std::unique_lock<std::mutex> lckWrite(m_mtxQueueWrite);
@@ -146,6 +148,8 @@ void Engine::PushTask(core::base::Task *pTask)
     // Notify empty condition if any waiting
     if (bQueueIsEmpty)
     {
+        static int i=0;
+        SLOG2(slog::LL_DEBUG, "sontv notify empty: %d", ++i);
         m_cvQueueEmpty.notify_one();
     }
 }
@@ -156,13 +160,16 @@ core::base::Task* Engine::GetTask()
     bool bQueueIsFull = false;
     std::unique_lock<std::mutex> lckRead(m_mtxQueueRead);
     core::base::Task* pRetTask = NULL;
+    std::thread::id id = std::this_thread::get_id();
     if (m_pFirstTask == m_pLastTask)
     {
         // Wait here if queue is empty
+        SLOG2(slog::LL_DEBUG, "sontv wait 0x%x", id);
         m_cvQueueEmpty.wait(lckRead);
     }
 
     // Check queue is full to notify full condition
+    SLOG2(slog::LL_DEBUG, "sontv unlock 0x%x", id);
     if (m_pFirstTask == m_pNextTask)
     {
         bQueueIsFull = true;

@@ -16,8 +16,6 @@
 #include <memory>
 #include "Worker.h"
 
-#define ENGINE_COMP "ENGINE_COMP"
-
 namespace core
 {
 namespace base

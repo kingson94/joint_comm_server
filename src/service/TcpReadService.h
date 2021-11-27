@@ -6,8 +6,7 @@
 */
 #pragma once
 #include "core/base/Service.h"
-#define TCP_READ_SERVICE_TYPE 0
-#define MAGIC_PACKET_BYTE 0x66
+#include "AppDefine.h"
 
 namespace core
 {
