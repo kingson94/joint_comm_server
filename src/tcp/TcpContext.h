@@ -1,22 +1,28 @@
+/*
+* File: TcpContext.h
+* Class: TcpContext
+* Created: 20211127
+* Author: SonTV
+*/
 #pragma once
 #include "core/base/Context.h"
 #include <string>
 #include <memory>
+#include "Connection.h"
 
 namespace tcp
 {
-class Connection;
 class TcpContext : public core::base::Context
 {
 private:
-    std::shared_ptr<Connection> m_pConnection;
+    ConnectionPtr m_pConnection;
     std::string m_strReadData;
     
 public:
-    TcpContext(const std::string &strReadData, std::shared_ptr<Connection> pConnection);
+    TcpContext(const std::string &strReadData, ConnectionPtr pConnection);
     ~TcpContext();
 
-    std::shared_ptr<Connection> GetConnection();
+    ConnectionPtr GetConnection();
     std::string GetData() const;
 };
 } // namespace tcp

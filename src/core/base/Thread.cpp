@@ -1,3 +1,9 @@
+/*
+* File: Thread.cpp
+* Class: Thread
+* Created: 20211127
+* Author: SonTV
+*/
 #include "Thread.h"
 #include "util/Utils.h"
 namespace core
@@ -20,7 +26,7 @@ void BaseThread::Start()
     }
     else
     {
-        SLOG(slog::LL_DEBUG, "Cannot init thread multiple times");
+        SLOG(slog::LL_DEBUG, "[Base] Cannot init thread multiple times");
     }
 }
 

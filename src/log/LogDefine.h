@@ -1,3 +1,8 @@
+/*
+* File: LogDefine.h
+* Created: 20211127
+* Author: SonTV
+*/
 #pragma once
 
 #ifndef _LOG_MONITOR_

@@ -1,5 +1,11 @@
 #pragma once
 
+/*
+* File: Engine.h
+* Class: Engine
+* Created: 20211127
+* Author: SonTV
+*/
 #include "core/base/Component.h"
 #include <mutex>
 #include <condition_variable>
@@ -8,6 +14,7 @@
 #include "service/TcpReadService.h"
 // #include "service/TcpService.h"
 #include <memory>
+#include "Worker.h"
 
 #define ENGINE_COMP "ENGINE_COMP"
 
@@ -23,8 +30,6 @@ namespace core
 {
 namespace op
 {
-class Worker;
-
 class Engine : public core::base::Component
 {
 private:
@@ -44,7 +49,7 @@ private:
 
     int m_iWorkerCount;
     int m_iQueueSize;
-    std::vector<std::shared_ptr<Worker>> m_vWorker;
+    std::vector<WorkerPtr> m_vWorker;
     std::unordered_map<int, core::base::Service*> m_hmService;
 
 public:

@@ -1,3 +1,9 @@
+/*
+* File: Connection.cpp
+* Class: Connection
+* Created: 20211127
+* Author: SonTV
+*/
 #include "tcp/Connection.h"
 #include <cstring>
 #include "core/operator/Engine.h"
@@ -10,6 +16,7 @@
 #include "util/Utils.h"
 #include <sys/socket.h>
 #include "tcp/TcpServer.h"
+#include "AppDefine.h"
 
 namespace tcp
 {
@@ -18,7 +25,8 @@ Connection::Connection(const int &iFD) : m_iFD(iFD)
     auto pApp = core::AppManager::GetInstance();
     if (pApp)
     {
-        m_pTcpServer = (tcp::TcpServer*) pApp->GetComponent(TCP_SERVER_COMP);
+        m_pTcpServer = (tcp::TcpServer*) pApp->GetComponent(TCP_SERVER_COMP).get();
+        m_pEngine = (core::op::Engine*) pApp->GetComponent(ENGINE_COMP).get();
     }
 }
 
@@ -28,16 +36,11 @@ Connection::~Connection()
 
 void Connection::PuskTaskReadSocket()
 {
-    auto pApp = core::AppManager::GetInstance();
-    if (pApp)
+    if (m_pEngine)
     {
-        core::op::Engine *pEngine = (core::op::Engine*) pApp->GetComponent(ENGINE_COMP);
-        if (pEngine)
-        {
-            core::base::Context *pContext = new tcp::ReadContext(std::make_shared<Connection>(m_iFD));
-            core::base::Task *pTask = new core::base::Task(TCP_READ_SERVICE_TYPE, pContext);
-            pEngine->PushTask(pTask);
-        }
+        core::base::Context *pContext = new tcp::ReadContext(std::make_shared<Connection>(m_iFD));
+        core::base::Task *pTask = new core::base::Task(TCP_READ_SERVICE_TYPE, pContext);
+        m_pEngine->PushTask(pTask);
     }
 }
 
@@ -51,8 +54,7 @@ int Connection::WriteSocket(const std::string &strData)
     std::unique_lock<std::mutex> lckWriteSock(m_mtxWriteSocket);
 
     int iPacketSize = (int) (strData.size() + TCP_HEADER_SIZE);
-    // char* szPacket = new char[iPacketSize];
-    char* szPacket = (char*) malloc(iPacketSize);
+    char* szPacket =  new char[iPacketSize];
     int iTotalSentByte = 0;
 	int iTryTimes = WRITE_TRY_TIMES_MAX;
 
@@ -96,12 +98,7 @@ int Connection::WriteSocket(const std::string &strData)
 			iTryTimes = WRITE_TRY_TIMES_MAX;
 		}
 	}
-
-    if (szPacket)
-    {
-        free(szPacket);
-        szPacket = NULL;
-    }
+    SAFE_DEL(szPacket);
 
     return iTotalSentByte;
 }

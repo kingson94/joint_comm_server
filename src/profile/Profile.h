@@ -1,3 +1,9 @@
+/*
+* File: Profile.h
+* Class: Profile
+* Created: 20211127
+* Author: SonTV
+*/
 #pragma once
 #include <string>
 

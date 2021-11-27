@@ -4,20 +4,19 @@
 * Created: 20211024
 * Author: SonTV
 */
-
 #pragma once
 #include "core/base/Component.h"
 #include "core/base/Thread.h"
 #include <unordered_map>
 #include <unordered_set>
 #include <mutex>
+#include "Connection.h"
 
 #define TCP_SERVER_COMP "TCP_SERVER_COMP"
 
 namespace tcp
 {
 class TcpServerLauncher;
-class Connection;
 class TcpServer : public core::base::Component
 {
 private:
@@ -29,7 +28,7 @@ private:
     int m_iPort;
 
     std::mutex m_mtxConnectionWrite;
-    std::unordered_map<int, std::shared_ptr<Connection>> m_hmConnection;
+    std::unordered_map<int, ConnectionPtr> m_hmConnection;
     std::unordered_set<int> m_setAcceptedFD;
 
 private:

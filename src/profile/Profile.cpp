@@ -1,3 +1,9 @@
+/*
+* File: Profile.cpp
+* Class: Profile
+* Created: 20211127
+* Author: SonTV
+*/
 #include "Profile.h"
 
 namespace session

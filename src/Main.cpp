@@ -5,6 +5,7 @@
 #include "tcp/TcpServer.h"
 #include "tcp/TcpClient.h"
 #include "util/Utils.h"
+#include "AppDefine.h"
 
 #ifndef BUILD_MAJOR_VERSION
 #define BUILD_MAJOR_VERSION "1"
@@ -163,7 +164,8 @@ int main(int argc, char **argv)
 	{
 		// Server is a read only app =))
 	}
-
+	
+	pAppInstance->DestroyInstance();
 	SLOG(slog::LL_DEBUG, "[App] Application stopped");
 	return 0;
 }

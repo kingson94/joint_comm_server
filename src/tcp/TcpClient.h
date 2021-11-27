@@ -4,19 +4,18 @@
 * Created: 20211024
 * Author: SonTV
 */
-
 #pragma once
 #include "core/base/Component.h"
 #include "core/base/Thread.h"
 #include <unordered_map>
 #include <mutex>
+#include <tcp/Connection.h>
 
 #define TCP_CLIENT_COMP "TCP_CLIENT_COMP"
 
 namespace tcp
 {
 class TcpClientLauncher;
-class Connection;
 class TcpClient : public core::base::Component
 {
 private:
@@ -27,7 +26,7 @@ private:
     int m_iServerPort;
 
     std::mutex m_mtxConnectionWrite;
-    std::unordered_map<int, std::shared_ptr<Connection>> m_hmConnection;
+    std::unordered_map<int, ConnectionPtr> m_hmConnection;
 
 private:
     int CreateBoundSocket(const std::string &strHost, const int &iPort);

@@ -4,7 +4,6 @@
 * Created: 20211024
 * Author: SonTV
 */
-
 #include "AppManager.h"
 #include "log/LogDefine.h"
 #include "tcp/TcpServer.h"
@@ -67,7 +66,7 @@ void AppManager::SendMessageToEndpoint(const std::string &strMessage)
         auto pCompIter = m_hmComponent.find(TCP_SERVER_COMP);
         if (pCompIter != m_hmComponent.end())
         {
-            auto pServer = (tcp::TcpServer*) pCompIter->second;
+            auto pServer = (tcp::TcpServer*) pCompIter->second.get();
             if (pServer)
             {
                 // pServer->SendMessage(strMessage);
@@ -80,7 +79,7 @@ void AppManager::SendMessageToEndpoint(const std::string &strMessage)
         auto pCompIter = m_hmComponent.find(TCP_CLIENT_COMP);
         if (pCompIter != m_hmComponent.end())
         {
-            auto pClient = (tcp::TcpClient*) pCompIter->second;
+            auto pClient = (tcp::TcpClient*) pCompIter->second.get();
             if (pClient)
             {
                 std::string strAuthorizedMsg = "";
@@ -96,21 +95,21 @@ void AppManager::RegisterComponents()
     if (m_iRunningMode == RUNNING_MODE_SERVER)
     {
         SLOG(slog::LL_DEBUG, "[App] Register server");
-        core::base::Component *pTcpServer = new tcp::TcpServer();
+        std::shared_ptr<tcp::TcpServer> pTcpServer = std::make_shared<tcp::TcpServer>();
         m_hmComponent[pTcpServer->GetID()] = pTcpServer;
     }
     else if (m_iRunningMode == RUNNING_MODE_CLIENT)
     {
         SLOG(slog::LL_DEBUG, "[App] Register client");
-        core::base::Component *pTcpClient = new tcp::TcpClient();
+        std::shared_ptr<tcp::TcpClient> pTcpClient = std::make_shared<tcp::TcpClient>();
         m_hmComponent[pTcpClient->GetID()] = pTcpClient;
     }
 
-    core::base::Component *pEngine = new core::op::Engine();
+    std::shared_ptr<core::op::Engine> pEngine = std::make_shared<core::op::Engine>();
     m_hmComponent[pEngine->GetID()] = pEngine;
 }
 
-core::base::Component* AppManager::GetComponent(const std::string &strComponentID)
+ComponentPtr AppManager::GetComponent(const std::string &strComponentID)
 {
     auto pIter = m_hmComponent.find(strComponentID);
     if (pIter != m_hmComponent.end())
@@ -155,9 +154,5 @@ int AppManager::GetRunningMode() const
 
 AppManager::~AppManager()
 {
-    for (auto &pItComponent : m_hmComponent)
-    {
-        SAFE_DEL(pItComponent.second);
-    }
 }
 }

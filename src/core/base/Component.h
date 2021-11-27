@@ -6,6 +6,7 @@
 */
 #pragma once
 #include <string>
+#include <memory>
 
 namespace core
 {
@@ -29,3 +30,5 @@ protected:
 };
 } // namespace base
 } // namespace core
+
+typedef std::shared_ptr<core::base::Component> ComponentPtr;

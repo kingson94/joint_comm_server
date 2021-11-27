@@ -1,3 +1,9 @@
+/*
+* File: Worker.h
+* Class: Worker
+* Created: 20211127
+* Author: SonTV
+*/
 #pragma once
 #include "core/base/Thread.h"
 
@@ -15,3 +21,5 @@ public:
 };
 } // namespace op
 } // namespace core
+
+typedef std::shared_ptr<core::op::Worker> WorkerPtr;

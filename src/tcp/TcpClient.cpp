@@ -1,3 +1,9 @@
+/*
+* File: TcpClient.cpp
+* Class: TcpClient
+* Created: 20211127
+* Author: SonTV
+*/
 #include "TcpClient.h"
 #include "util/Utils.h"
 #include <sys/socket.h>

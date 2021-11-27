@@ -4,7 +4,6 @@
 * Created: 20211031
 * Author: SonTV
 */
-
 #include "Component.h"
 namespace core
 {

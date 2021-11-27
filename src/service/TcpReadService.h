@@ -1,3 +1,9 @@
+/*
+* File: TcpReadService.h
+* Class: TcpReadService
+* Created: 20211127
+* Author: SonTV
+*/
 #pragma once
 #include "core/base/Service.h"
 #define TCP_READ_SERVICE_TYPE 0

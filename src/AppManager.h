@@ -4,7 +4,6 @@
  * Created: 20211024
  * Author: SonTV
 */
-
 #pragma once
 #include <unordered_map>
 #include "core/base/Component.h"
@@ -26,7 +25,7 @@ public:
 
     // Register comp
     void RegisterComponents();
-    core::base::Component* GetComponent(const std::string &strComponentID);
+    ComponentPtr GetComponent(const std::string &strComponentID);
     void SendMessageToEndpoint(const std::string &strMessage);
     void SetRunningMode(const int &iMode);
     int GetRunningMode() const;
@@ -35,7 +34,7 @@ public:
 
 private:
     static AppManager* s_pIntance;
-    std::unordered_map<std::string, core::base::Component*> m_hmComponent;
+    std::unordered_map<std::string, ComponentPtr> m_hmComponent;
     session::Profile m_obProfile;
     int m_iRunningMode;
 };

@@ -4,7 +4,6 @@
 * Created: 20211031
 * Author: SonTV
 */
-
 #include "TcpServer.h"
 #include "log/LogDefine.h"
 #include "util/Utils.h"
@@ -145,7 +144,7 @@ void TcpServer::Listen()
 
                     std::unique_lock<std::mutex> lckConnectionWrite;
                     m_hmConnection[iClientFD] = pConnection;
-                    pConnection->PuskTaskReadSocket();
+                    // pConnection->PuskTaskReadSocket();
                 }
             }
             else // Socket already accepted. Continue reading

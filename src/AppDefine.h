@@ -1,5 +1,5 @@
 /*
-* File: Define.h
+* File: AppDefine.h
 * Created: 20211107
 * Author: SonTV
 */

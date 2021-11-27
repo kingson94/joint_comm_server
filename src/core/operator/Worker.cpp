@@ -1,7 +1,14 @@
+/*
+* File: Worker.cpp
+* Class: Worker
+* Created: 20211127
+* Author: SonTV
+*/
 #include "core/operator/Worker.h"
 #include "core/operator/Engine.h"
 #include "AppManager.h"
 #include "util/Utils.h"
+#include "AppDefine.h"
 
 namespace core
 {
@@ -21,7 +28,7 @@ void Worker::Run()
     auto pAppInstance = AppManager::GetInstance();
     if (pAppInstance)
     {
-        auto pEngineComp = (core::op::Engine*) pAppInstance->GetComponent(ENGINE_COMP);
+        auto pEngineComp = (core::op::Engine*) pAppInstance->GetComponent(ENGINE_COMP).get();
         
         if (pEngineComp)
         {
