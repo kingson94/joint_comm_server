@@ -18,6 +18,8 @@
 // Tcp
 #define DEFAULT_TCP_PORT 8012
 #define MAGIC_PACKET_BYTE 0x66
+#define TCP_HEADER_SIZE 8
+#define WRITE_TRY_TIMES_MAX 10
 
 // App
 #define RUNNING_MODE_SERVER 0

@@ -1,0 +1,30 @@
+{
+    "login": {
+        "id" : 1,
+        "category": "authorization",
+        "request": {
+            "user_id": 820845784,
+            "session_id": 32654872
+        },
+        "response": {
+            "profile": {
+                "user_name": "name",
+                "dob_unix": 48468498,
+                "dob_text": "16/02/2000",
+                "bio": "hello"
+            }
+        }
+    },
+    "authenticate": {
+        "id": 2,
+        "category": "authorization",
+        "request": {
+            "user_name": "name",
+            "pasword": "encrypt pass"
+        },
+        "response": {
+            "user_id": 845714444,
+            "session_id": 32654872
+        }
+    }
+}

@@ -290,7 +290,7 @@ int TcpServer::CreateBoundSocket(const std::string &strHost, const int &iPort)
     return iListenFD;
 }
 
-void TcpServer::SendMessage(const std::string &strContent)
+void TcpServer::SendMessage(MessagePtr pMessage)
 {
     if (m_bIsInit)
     {
@@ -298,7 +298,7 @@ void TcpServer::SendMessage(const std::string &strContent)
         {
             for (auto &pIter : m_hmConnection)
             {
-                int iWrittenSize = pIter.second->WriteSocket(strContent);
+                int iWrittenSize = pIter.second->WriteSocket(pMessage);
                 if (iWrittenSize > 0)
                 {
                     SLOG2(slog::LL_DEBUG, "[TcpServer] Write socket %d total size %d", m_iServerFD, iWrittenSize);

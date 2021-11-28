@@ -51,7 +51,8 @@
         "iomanip": "cpp",
         "bitset": "cpp",
         "complex": "cpp",
-        "typeindex": "cpp"
+        "typeindex": "cpp",
+        "cstddef": "cpp"
     },
     "cmake.configureOnOpen": true
 }

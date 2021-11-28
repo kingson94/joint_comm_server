@@ -9,8 +9,8 @@
 
 namespace tcp
 {
-TcpContext::TcpContext(const std::string &strReadData, ConnectionPtr pConnection) : core::base::Context()
-, m_pConnection(pConnection), m_strReadData(strReadData)
+TcpContext::TcpContext(MessagePtr pMessage, ConnectionPtr pConnection) : core::base::Context()
+, m_pConnection(pConnection), m_pMessage(pMessage)
 {
 }
 
@@ -23,8 +23,8 @@ ConnectionPtr TcpContext::GetConnection()
     return m_pConnection;
 }
 
-std::string TcpContext::GetData() const
+MessagePtr TcpContext::GetMessage() const
 {
-    return m_strReadData;
+    return m_pMessage;
 }
 } // namespace tcp

@@ -42,7 +42,7 @@ public:
     void Run() override;
     void Init() override;
     void Listen();
-    void SendMessage(const std::string &strContent);
+    void SendMessage(MessagePtr pMessage);
 
     void CloseConnection(const int &iFD);
     ConnectionPtr GetConnection(const int &iFD);

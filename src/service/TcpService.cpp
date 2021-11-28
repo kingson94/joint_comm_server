@@ -7,6 +7,7 @@
 #include "service/TcpService.h"
 #include "tcp/TcpContext.h"
 #include "tcp/Connection.h"
+#include "tcp/Message.h"
 
 namespace service
 {
@@ -14,11 +15,10 @@ bool TcpService::ProcessRequest(core::base::Context *pContext)
 {
     tcp::TcpContext *pTcpContext = (tcp::TcpContext*) pContext;
     auto pConnection = pTcpContext->GetConnection();
-    std::string strMsgContent = pTcpContext->GetData();
+    MessagePtr pMessage = pTcpContext->GetMessage();
 
     if (pConnection)
     {
-        SLOG2(slog::LL_DEBUG, "Receive message from client: %s", strMsgContent.c_str());
         // Response here if need
         return true;
     }

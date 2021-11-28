@@ -8,9 +8,7 @@
 #include <string>
 #include "boost/thread/mutex.hpp"
 #include <memory>
-
-#define TCP_HEADER_SIZE 4
-#define WRITE_TRY_TIMES_MAX 10
+#include "tcp/Message.h"
 
 namespace core
 {
@@ -31,6 +29,7 @@ private:
     boost::mutex m_mtxWriteSocket;
     TcpServer* m_pTcpServer;
     core::op::Engine* m_pEngine;
+    MessagePtr m_pMessage;
 
 public:
     Connection(const int &iFD);
@@ -38,10 +37,9 @@ public:
     int GetSocket();
 
     void PuskTaskReadSocket();
-    void PuskTaskProcessService(const std::string &strReadData);
+    void PuskTaskProcessService(MessagePtr pMessage);
     bool ReadSocket();
-    int WriteSocket(const std::string &strData);
-
+    int WriteSocket(MessagePtr pMessage);
 }; 
 } // namespace tcp
 

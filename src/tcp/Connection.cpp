@@ -49,32 +49,31 @@ int Connection::GetSocket()
     return m_iFD;
 }
 
-int Connection::WriteSocket(const std::string &strData)
+int Connection::WriteSocket(MessagePtr pMessage)
 {
     boost::mutex::scoped_lock lckWriteSock(m_mtxWriteSocket);
+    if (!pMessage)
+    {
+        return -1;
+    }
 
-    int iPacketSize = (int) (strData.size() + TCP_HEADER_SIZE);
-    char* szPacket =  new char[iPacketSize];
     int iTotalSentByte = 0;
 	int iTryTimes = WRITE_TRY_TIMES_MAX;
+    std::string strEncodeData = "";
+    int iEncodeSize = 0;
 
-    if (!szPacket)
+    pMessage->EncodeData(strEncodeData);
+    iEncodeSize = strEncodeData.size();
+
+    if (iEncodeSize < 0)
     {
         SLOG(slog::LL_DEBUG, "[Connection] Create packet failed");
         return -1;
     }
 
-    // Encode data
-    szPacket[0] = MAGIC_PACKET_BYTE;
-    szPacket[1] = MAGIC_PACKET_BYTE;
-    szPacket[2] = (iPacketSize >> 8) & 0xFF;
-    szPacket[3] = iPacketSize & 0xFF;
-
-    memcpy(szPacket + TCP_HEADER_SIZE, strData.c_str(), strData.size());
-
-	while (iTotalSentByte < iPacketSize)
+	while (iTotalSentByte < iEncodeSize)
 	{
-        int iCurSentByte = write(m_iFD, szPacket, iPacketSize);
+        int iCurSentByte = write(m_iFD, strEncodeData.c_str(), iEncodeSize);
 		if (iCurSentByte == -1)
 		{
 			if (errno == EAGAIN || errno == EWOULDBLOCK)
@@ -98,17 +97,16 @@ int Connection::WriteSocket(const std::string &strData)
 			iTryTimes = WRITE_TRY_TIMES_MAX;
 		}
 	}
-    SAFE_DEL(szPacket);
 
     return iTotalSentByte;
 }
 
-void Connection::PuskTaskProcessService(const std::string &strReadData)
+void Connection::PuskTaskProcessService(MessagePtr pMessage)
 {	
     if (m_pEngine)
     {
         ConnectionPtr pConnection = m_pTcpServer->GetConnection(m_iFD);
-        core::base::Context *pTcpContext = new TcpContext(strReadData, pConnection);
+        core::base::Context *pTcpContext = new TcpContext(pMessage, pConnection);
         core::base::Task *pTask = new core::base::Task(TCP_SERVICE_TYPE, pTcpContext);
         m_pEngine->PushTask(pTask);
     }
@@ -118,6 +116,7 @@ bool Connection::ReadSocket()
 {
     int iReceived = 0;
     int nPacketSize = 0;
+    int iRequestType = -1;
     char *szPayload = NULL;
     unsigned char szHeader[TCP_HEADER_SIZE];
     memset(szHeader, 0x00, sizeof(szHeader));
@@ -169,11 +168,17 @@ bool Connection::ReadSocket()
 					return true;
 				}
 
-                nPacketSize = (szHeader[2] << 8) + szHeader[3];
+                nPacketSize += (szHeader[2] << 24);
+                nPacketSize += (szHeader[3] << 16);
+                nPacketSize += (szHeader[4] << 8);
+                nPacketSize += szHeader[5];
                 if (nPacketSize > 0)
                 {
                     szPayload = new char[nPacketSize - TCP_HEADER_SIZE];
                 }
+                
+                iRequestType += (szHeader[6] << 8);
+                iRequestType += szHeader[7];
             }
         }
         else if (iReceived < nPacketSize)
@@ -210,10 +215,8 @@ bool Connection::ReadSocket()
             if (iReceived == nPacketSize)
             {
                 std::string strReadData = std::string(szPayload, nPacketSize - TCP_HEADER_SIZE);
-                // SLOG2(slog::LL_DEBUG, "[Connection] Receive message from client: %s", strReadData.c_str());
-                PuskTaskProcessService(strReadData);
-
-                SAFE_DEL(szPayload);
+                MessagePtr pMessage = std::make_shared<tcp::Message>(nPacketSize - TCP_HEADER_SIZE, szPayload, iRequestType);
+                PuskTaskProcessService(pMessage);
                 return true;
             }
         }

@@ -38,7 +38,7 @@ public:
     void Init() override;
     bool Connect(const std::string &strHost, const int &iPort);
     void Listen();
-    void SendMessage(const std::string &strContent);
+    void SendMessage(MessagePtr pMessage);
     void AttachAuthortoMessage(const std::string &strAuthorName, const std::string &strMessageIn, std::string &strMessageOut);
 };
 

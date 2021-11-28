@@ -91,7 +91,7 @@ bool TcpClient::Connect(const std::string &strHost, const int &iPort)
     return true;
 }
 
-void TcpClient::SendMessage(const std::string &strContent)
+void TcpClient::SendMessage(MessagePtr pMessage)
 {
     if (m_bIsInit)
     {
@@ -99,7 +99,7 @@ void TcpClient::SendMessage(const std::string &strContent)
         {
             for (auto &pIter : m_hmConnection)
             {
-                int iWrittenSize = pIter.second->WriteSocket(strContent);
+                int iWrittenSize = pIter.second->WriteSocket(pMessage);
                 if (iWrittenSize > 0)
                 {
                     SLOG2(slog::LL_DEBUG, "[TcpClient] Write socket %d total size %d", m_iClientFD, iWrittenSize);
@@ -118,7 +118,7 @@ void TcpClient::AttachAuthortoMessage(const std::string &strAuthorName, const st
     nlohmann::json jMessage;
     jMessage["author"] = strAuthorName;
     jMessage["message"] = strMessageIn;
-    strMessageOut = jMessage.dump(4);
+    strMessageOut = jMessage.dump(0);
 }
 
 void TcpClient::Init()

@@ -165,7 +165,7 @@ int main(int argc, char **argv)
 		// Server is a read only app =))
 	}
 	
-	pAppInstance->DestroyInstance();
+	// pAppInstance->DestroyInstance();
 	SLOG(slog::LL_DEBUG, "[App] Application stopped");
 	return 0;
 }

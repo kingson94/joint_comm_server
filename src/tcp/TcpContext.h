@@ -16,13 +16,13 @@ class TcpContext : public core::base::Context
 {
 private:
     ConnectionPtr m_pConnection;
-    std::string m_strReadData;
+    MessagePtr m_pMessage;
     
 public:
-    TcpContext(const std::string &strReadData, ConnectionPtr pConnection);
+    TcpContext(MessagePtr pMessage, ConnectionPtr pConnection);
     ~TcpContext();
 
     ConnectionPtr GetConnection();
-    std::string GetData() const;
+    MessagePtr GetMessage() const;
 };
 } // namespace tcp
