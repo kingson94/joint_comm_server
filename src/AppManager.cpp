@@ -97,13 +97,13 @@ void AppManager::RegisterComponents()
     m_hmComponent[pEngine->GetID()] = pEngine;
     if (m_iRunningMode == RUNNING_MODE_SERVER)
     {
-        SLOG(slog::LL_DEBUG, "[App] Register server");
+        TSLOG(tslog::LL_DEBUG, "[App] Register server");
         std::shared_ptr<tcp::TcpServer> pTcpServer = std::make_shared<tcp::TcpServer>();
         m_hmComponent[pTcpServer->GetID()] = pTcpServer;
     }
     else if (m_iRunningMode == RUNNING_MODE_CLIENT)
     {
-        SLOG(slog::LL_DEBUG, "[App] Register client");
+        TSLOG(tslog::LL_DEBUG, "[App] Register client");
         std::shared_ptr<tcp::TcpClient> pTcpClient = std::make_shared<tcp::TcpClient>();
         m_hmComponent[pTcpClient->GetID()] = pTcpClient;
     }

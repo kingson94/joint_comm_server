@@ -36,14 +36,14 @@ void Worker::Run()
             {
                 if (pAppInstance->GetRunningMode() == RUNNING_MODE_SERVER)
                 {
-                    SLOG2(slog::LL_DEBUG, "Worker %d start", m_iThreadID);
+                    TSLOG2(tslog::LL_DEBUG, "Worker %d start", m_iThreadID);
                 }
 
                 pEngineComp->ConsumeTask();
 
                 if (pAppInstance->GetRunningMode() == RUNNING_MODE_SERVER)
                 {
-                    SLOG2(slog::LL_DEBUG, "Worker %d end", m_iThreadID);
+                    TSLOG2(tslog::LL_DEBUG, "Worker %d end", m_iThreadID);
                 }
             }
         }

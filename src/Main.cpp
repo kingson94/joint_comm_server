@@ -20,7 +20,7 @@ using namespace std;
 
 void SigpipeHanlder(int iSignal)
 {
-   SLOG2(slog::LL_DEBUG, "[App] Receive signal: %d", iSignal);
+   TSLOG2(tslog::LL_DEBUG, "[App] Receive signal: %d", iSignal);
 }
 
 int main(int argc, char **argv)
@@ -85,7 +85,7 @@ int main(int argc, char **argv)
 
 		if (iRunningMode < 0)
 		{
-			SLOG2(slog::LL_DEBUG, "[App] Running mode invalid. Run with option \"--help\" for more info.");
+			TSLOG2(tslog::LL_DEBUG, "[App] Running mode invalid. Run with option \"--help\" for more info.");
 		}
 	}
 
@@ -166,6 +166,6 @@ int main(int argc, char **argv)
 	}
 	
 	// pAppInstance->DestroyInstance();
-	SLOG(slog::LL_DEBUG, "[App] Application stopped");
+	TSLOG(tslog::LL_DEBUG, "[App] Application stopped");
 	return 0;
 }

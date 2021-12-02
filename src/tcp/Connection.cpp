@@ -67,7 +67,7 @@ int Connection::WriteSocket(MessagePtr pMessage)
 
     if (iEncodeSize < 0)
     {
-        SLOG(slog::LL_DEBUG, "[Connection] Create packet failed");
+        TSLOG(tslog::LL_DEBUG, "[Connection] Create packet failed");
         return -1;
     }
 
@@ -81,7 +81,7 @@ int Connection::WriteSocket(MessagePtr pMessage)
 				iTryTimes--;
 				if (iTryTimes < 0)
 				{
-                    SLOG2(slog::LL_DEBUG, "[Connection] Tried times reach zero");
+                    TSLOG2(tslog::LL_DEBUG, "[Connection] Tried times reach zero");
                     return -1;
 				}
 				usleep(100);
@@ -128,7 +128,7 @@ bool Connection::ReadSocket()
             int iReadCount = read(m_iFD, szHeader, TCP_HEADER_SIZE - iReceived);
             if (iReadCount == 0)
             {
-                SLOG2(slog::LL_DEBUG, "[Connection] Close connection %d", m_iFD);
+                TSLOG2(tslog::LL_DEBUG, "[Connection] Close connection %d", m_iFD);
                 if (m_pTcpServer)
                 {
                     m_pTcpServer->CloseConnection(m_iFD);
@@ -139,7 +139,7 @@ bool Connection::ReadSocket()
             {
                 if (errno != EAGAIN)
                 {
-                    SLOG2(slog::LL_DEBUG, "[Connection] Close connection %d", m_iFD);
+                    TSLOG2(tslog::LL_DEBUG, "[Connection] Close connection %d", m_iFD);
                     if (m_pTcpServer)
                     {
                         m_pTcpServer->CloseConnection(m_iFD);
@@ -158,8 +158,8 @@ bool Connection::ReadSocket()
             {
                 if (szHeader[0] != MAGIC_PACKET_BYTE || szHeader[1] != MAGIC_PACKET_BYTE)
 				{
-					SLOG(slog::LL_DEBUG, "[Connection] Magic bytes are not matched");
-					SLOG2(slog::LL_DEBUG, "[Connection] Close connection: %d", m_iFD);
+					TSLOG(tslog::LL_DEBUG, "[Connection] Magic bytes are not matched");
+					TSLOG2(tslog::LL_DEBUG, "[Connection] Close connection: %d", m_iFD);
 
 					if (m_pTcpServer)
                     {
@@ -186,7 +186,7 @@ bool Connection::ReadSocket()
             int iReadCount = read(m_iFD, szPayload, nPacketSize - iReceived);
             if (iReadCount == 0)
             {
-                SLOG2(slog::LL_DEBUG, "[Connection] Close connection %d", m_iFD);
+                TSLOG2(tslog::LL_DEBUG, "[Connection] Close connection %d", m_iFD);
                 if (m_pTcpServer)
                 {
                     m_pTcpServer->CloseConnection(m_iFD);
@@ -197,7 +197,7 @@ bool Connection::ReadSocket()
             {
                 if (errno != EAGAIN)
                 {
-                    SLOG2(slog::LL_DEBUG, "[Connection] Close connection %d", m_iFD);
+                    TSLOG2(tslog::LL_DEBUG, "[Connection] Close connection %d", m_iFD);
                     if (m_pTcpServer)
                     {
                         m_pTcpServer->CloseConnection(m_iFD);

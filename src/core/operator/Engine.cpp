@@ -101,13 +101,13 @@ void Engine::ConsumeTask()
                 bool bResult = pIter->second->ProcessRequest(pContext);
                 if (!bResult)
                 {
-                    SLOG(slog::LL_DEBUG, "[OP] Processing task failed")
+                    TSLOG(tslog::LL_DEBUG, "[OP] Processing task failed")
                 }
             }
         }
         else
         {
-            SLOG2(slog::LL_DEBUG, "[OP] Receive strange request %d", pTask->GetType());
+            TSLOG2(tslog::LL_DEBUG, "[OP] Receive strange request %d", pTask->GetType());
         }
         
         SAFE_DEL(pTask);

@@ -26,7 +26,7 @@ void BaseThread::Start()
     }
     else
     {
-        SLOG(slog::LL_DEBUG, "[Base] Cannot init thread multiple times");
+        TSLOG(tslog::LL_DEBUG, "[Base] Cannot init thread multiple times");
     }
 }
 

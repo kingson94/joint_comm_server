@@ -18,7 +18,7 @@
 #endif // MAX_LOG_SIZE
 
 #ifdef _LOG_MONITOR_
-namespace slog
+namespace tslog
 {
 enum ELogLevel
 {
@@ -27,10 +27,10 @@ enum ELogLevel
     LL_ERROR    = 'E',
     LL_FATAL    = 'F'
 };
-} // namespace slog
+} // namespace tslog
 
-#ifndef SLOG
-#define SLOG(level, content) \
+#ifndef TSLOG
+#define TSLOG(level, content) \
     { \
         std::string strTmp(__FILE__); \
         std::string strRelativeFilePath = strTmp; \
@@ -42,10 +42,10 @@ enum ELogLevel
         std::printf("[%c]%s:%d] %s\n", level, strRelativeFilePath.c_str(), __LINE__, content); \
     } \
 
-#endif // SLOG
+#endif // TSLOG
 
-#ifndef SLOG2
-#define SLOG2(level, pattern, ...) \
+#ifndef TSLOG2
+#define TSLOG2(level, pattern, ...) \
     { \
         std::string strTmp(__FILE__); \
         std::string strRelativeFilePath = strTmp; \

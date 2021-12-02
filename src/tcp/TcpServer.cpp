@@ -40,13 +40,13 @@ void TcpServer::Run()
 
         if (OpenConnection(m_strHost, m_iPort) == 0)
         {
-            SLOG2(slog::LL_DEBUG, "[TcpServer] Tcp server started. Host: %s port %d", m_strHost.c_str(), m_iPort);
+            TSLOG2(tslog::LL_DEBUG, "[TcpServer] Tcp server started. Host: %s port %d", m_strHost.c_str(), m_iPort);
             m_pLauncher = new TcpServerLauncher(101, this);
             m_pLauncher->Start();
         }
         else
         {
-            SLOG(slog::LL_DEBUG, "[TcpServer] Create socket failed");
+            TSLOG(tslog::LL_DEBUG, "[TcpServer] Create socket failed");
         }
     }
 }
@@ -112,11 +112,11 @@ void TcpServer::Listen()
                         break;
                     }
 
-                    SLOG2(slog::LL_DEBUG, "[TcpServer] Accepted new connection. Fd: %d", iClientFD);
+                    TSLOG2(tslog::LL_DEBUG, "[TcpServer] Accepted new connection. Fd: %d", iClientFD);
                     iResult = MakeNonBlockingFD(iClientFD);
                     if (iResult == -1)
                     {
-                        SLOG2(slog::LL_DEBUG, "[TcpServer] Error on making socket non-blocking %d", iClientFD);
+                        TSLOG2(tslog::LL_DEBUG, "[TcpServer] Error on making socket non-blocking %d", iClientFD);
                         CloseConnection(iClientFD);
                         break;
                     }
@@ -124,7 +124,7 @@ void TcpServer::Listen()
                     auto pConnection = std::make_shared<Connection>(iClientFD);
                     if (!pConnection)
                     {
-                        SLOG2(slog::LL_DEBUG, "[TcpServer] Cannot create connection on fd: %d", iClientFD);
+                        TSLOG2(tslog::LL_DEBUG, "[TcpServer] Cannot create connection on fd: %d", iClientFD);
                         CloseConnection(iClientFD);
                     }
                     
@@ -137,7 +137,7 @@ void TcpServer::Listen()
 
                     if (iResult == -1)
                     {
-                        SLOG(slog::LL_DEBUG, "[TcpServer] Error in epoll add");
+                        TSLOG(tslog::LL_DEBUG, "[TcpServer] Error in epoll add");
                         CloseConnection(iClientFD);
                         break;
                     }
@@ -149,7 +149,7 @@ void TcpServer::Listen()
             }
             else // Socket already accepted. Continue reading
             {
-                SLOG2(slog::LL_DEBUG, "[TcpServer] Reading from established connection. Fd: %d", pEpollEvents[i].data.fd);
+                TSLOG2(tslog::LL_DEBUG, "[TcpServer] Reading from established connection. Fd: %d", pEpollEvents[i].data.fd);
                 auto pIter = m_hmConnection.find(pEpollEvents[i].data.fd);
                 if (pIter != m_hmConnection.end())
                 {
@@ -174,14 +174,14 @@ int TcpServer::OpenConnection(const std::string &strHost, const int &iPort)
 
     if (iListenFD == -1)
     {
-        SLOG(slog::LL_DEBUG, "[TcpServer] Create and bind socket failed");
+        TSLOG(tslog::LL_DEBUG, "[TcpServer] Create and bind socket failed");
         return -1;
     }
 
     iResult = MakeNonBlockingFD(iListenFD);
 	if (iResult == -1)
 	{
-        SLOG2(slog::LL_DEBUG, "[TcpServer] Error on making socket non-blocking %d", iListenFD);
+        TSLOG2(tslog::LL_DEBUG, "[TcpServer] Error on making socket non-blocking %d", iListenFD);
 		CloseConnection(iListenFD);
 		return -1;
 	}
@@ -189,7 +189,7 @@ int TcpServer::OpenConnection(const std::string &strHost, const int &iPort)
     iResult = listen(iListenFD, SOMAXCONN);
     if (iResult == -1)
 	{
-        SLOG2(slog::LL_DEBUG, "[TcpServer] Error on socket listening %d", iListenFD);
+        TSLOG2(tslog::LL_DEBUG, "[TcpServer] Error on socket listening %d", iListenFD);
 		CloseConnection(iListenFD);
 		return -1;
 	}
@@ -199,7 +199,7 @@ int TcpServer::OpenConnection(const std::string &strHost, const int &iPort)
 	iResult = epoll_ctl(m_iEpollFD, EPOLL_CTL_ADD, iListenFD, &stEpollEvent);
 	if (iResult == -1)
 	{
-		SLOG(slog::LL_DEBUG, "[TcpServer] Error in epoll add");
+		TSLOG(tslog::LL_DEBUG, "[TcpServer] Error in epoll add");
 		return -1;
 	}
 
@@ -256,14 +256,14 @@ int TcpServer::CreateBoundSocket(const std::string &strHost, const int &iPort)
     iListenFD = socket(AF_INET, SOCK_STREAM, 0);
     if (iListenFD == -1)
     {
-        SLOG(slog::LL_DEBUG, "[TcpServer] Cannot create socket");
+        TSLOG(tslog::LL_DEBUG, "[TcpServer] Cannot create socket");
         return -1;
     }
 
     iResult = setsockopt(iListenFD, SOL_SOCKET, SO_REUSEADDR, &(bOption), sizeof(bOption));
     if (iResult == -1)
     {
-        SLOG(slog::LL_DEBUG, "[TcpServer] Cannot set socket options");
+        TSLOG(tslog::LL_DEBUG, "[TcpServer] Cannot set socket options");
         return -1;
     }
     memset(&stSocketAddress, 0, sizeof(stSocketAddress));
@@ -283,7 +283,7 @@ int TcpServer::CreateBoundSocket(const std::string &strHost, const int &iPort)
     iResult = bind(iListenFD, (struct sockaddr*) &stSocketAddress, sizeof(stSocketAddress));
     if (iResult != 0)
     {
-        SLOG2(slog::LL_DEBUG, "[TcpServer] Cannot bind socket with address");
+        TSLOG2(tslog::LL_DEBUG, "[TcpServer] Cannot bind socket with address");
         return -1;
     }
 
@@ -301,11 +301,11 @@ void TcpServer::SendMessage(MessagePtr pMessage)
                 int iWrittenSize = pIter.second->WriteSocket(pMessage);
                 if (iWrittenSize > 0)
                 {
-                    SLOG2(slog::LL_DEBUG, "[TcpServer] Write socket %d total size %d", m_iServerFD, iWrittenSize);
+                    TSLOG2(tslog::LL_DEBUG, "[TcpServer] Write socket %d total size %d", m_iServerFD, iWrittenSize);
                 }
                 else
                 {
-                    SLOG2(slog::LL_DEBUG, "[TcpServer] Write socket %d failed", m_iServerFD);
+                    TSLOG2(tslog::LL_DEBUG, "[TcpServer] Write socket %d failed", m_iServerFD);
                 }
             }
         }

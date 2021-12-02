@@ -31,13 +31,13 @@ void TcpClient::Run()
     {
         if (Connect(m_strServerHost, m_iServerPort) == true)
         {
-            SLOG2(slog::LL_DEBUG, "[TcpClient] Connected to host: %s port: %d", m_strServerHost.c_str(), m_iServerPort);
+            TSLOG2(tslog::LL_DEBUG, "[TcpClient] Connected to host: %s port: %d", m_strServerHost.c_str(), m_iServerPort);
             m_pLauncher = new TcpClientLauncher(102, this);
             m_pLauncher->Start();
         }
         else
         {
-            SLOG2(slog::LL_DEBUG, "[TcpClient] Cannot connect to server: %s, port: %d", m_strServerHost.c_str(), m_iServerPort);
+            TSLOG2(tslog::LL_DEBUG, "[TcpClient] Cannot connect to server: %s, port: %d", m_strServerHost.c_str(), m_iServerPort);
         }
     }
 }
@@ -53,7 +53,7 @@ bool TcpClient::Connect(const std::string &strHost, const int &iPort)
     iConnectedFD = socket(AF_INET, SOCK_STREAM, 0);
     if (iConnectedFD == -1)
     {
-        SLOG(slog::LL_DEBUG, "[TcpClient] Cannot create socket");
+        TSLOG(tslog::LL_DEBUG, "[TcpClient] Cannot create socket");
         return false;
     }
 
@@ -62,7 +62,7 @@ bool TcpClient::Connect(const std::string &strHost, const int &iPort)
     stSocketAddress.sin_family = AF_INET;
     if (strHost.empty())
     {
-        SLOG(slog::LL_DEBUG, "[TcpClient] Hostname is empty");
+        TSLOG(tslog::LL_DEBUG, "[TcpClient] Hostname is empty");
         return false;
     }
 
@@ -73,14 +73,14 @@ bool TcpClient::Connect(const std::string &strHost, const int &iPort)
     iResult = connect(iConnectedFD, (struct sockaddr*) &stSocketAddress, sizeof(stSocketAddress));
     if (iResult != 0)
     {
-        SLOG2(slog::LL_DEBUG, "[TcpClient] Cannot connect to address. Error: %d", errno);
+        TSLOG2(tslog::LL_DEBUG, "[TcpClient] Cannot connect to address. Error: %d", errno);
         return false;
     }
 
     auto pConnection = std::make_shared<Connection>(iConnectedFD);
     if (!pConnection)
     {
-        SLOG2(slog::LL_DEBUG, "[TcpClient] Cannot create connection on fd: %d", iConnectedFD);
+        TSLOG2(tslog::LL_DEBUG, "[TcpClient] Cannot create connection on fd: %d", iConnectedFD);
         close(iConnectedFD);
     }
 
@@ -102,11 +102,11 @@ void TcpClient::SendMessage(MessagePtr pMessage)
                 int iWrittenSize = pIter.second->WriteSocket(pMessage);
                 if (iWrittenSize > 0)
                 {
-                    SLOG2(slog::LL_DEBUG, "[TcpClient] Write socket %d total size %d", m_iClientFD, iWrittenSize);
+                    TSLOG2(tslog::LL_DEBUG, "[TcpClient] Write socket %d total size %d", m_iClientFD, iWrittenSize);
                 }
                 else
                 {
-                    SLOG2(slog::LL_DEBUG, "[TcpClient] Write socket %d failed", m_iClientFD);
+                    TSLOG2(tslog::LL_DEBUG, "[TcpClient] Write socket %d failed", m_iClientFD);
                 }
             }
         }
