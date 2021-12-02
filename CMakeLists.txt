@@ -18,6 +18,7 @@ file(GLOB SOURCES
     src/core/operator/*.cpp
     src/tcp/*.cpp
     src/service/*.cpp
+    src/service/connection/*.cpp
     src/profile/*.cpp
 )
 
