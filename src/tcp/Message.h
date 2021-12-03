@@ -13,7 +13,7 @@ namespace tcp
 class Message
 {
 private:
-    const char* m_szData;
+    char* m_szData;
     int m_iDataSize;
     int m_iRequestType;
 
@@ -22,7 +22,8 @@ public:
     ~Message();
 
     int GetDataSize();
-    void EncodeData(std::string &strEncodedData);
+    void GetEncodeData(std::string &strEncodedData);
+    char* GetData();
 };
 } // namespace tcp
 

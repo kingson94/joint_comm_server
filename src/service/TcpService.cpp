@@ -20,6 +20,7 @@ bool TcpService::ProcessRequest(core::base::Context *pContext)
     if (pConnection)
     {
         // Response here if need
+        // TSLOG2(tslog::LL_DEBUG, "content %s", strMsgContent.c_str());
         return true;
     }
     return false;

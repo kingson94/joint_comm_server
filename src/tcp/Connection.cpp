@@ -62,7 +62,7 @@ int Connection::WriteSocket(MessagePtr pMessage)
     std::string strEncodeData = "";
     int iEncodeSize = 0;
 
-    pMessage->EncodeData(strEncodeData);
+    pMessage->GetEncodeData(strEncodeData);
     iEncodeSize = strEncodeData.size();
 
     if (iEncodeSize < 0)

@@ -83,8 +83,11 @@ void AppManager::SendMessageToEndpoint(const std::string &strMessage)
             if (pClient)
             {
                 std::string strAuthorizedMsg = "";
+                char* szMessage = NULL;
                 pClient->AttachAuthortoMessage(m_obProfile.GetAlias(), strMessage, strAuthorizedMsg);
-                MessagePtr pMessage = std::make_shared<tcp::Message>(strAuthorizedMsg.size(), const_cast<char*>(strAuthorizedMsg.c_str()), 0);
+                szMessage = new char[strAuthorizedMsg.size()];
+                memcpy(szMessage, strAuthorizedMsg.c_str(), strAuthorizedMsg.size());
+                MessagePtr pMessage = std::make_shared<tcp::Message>(strAuthorizedMsg.size(), szMessage, 0);
                 pClient->SendMessage(pMessage);
             }
         }
