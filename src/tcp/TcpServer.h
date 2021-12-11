@@ -17,7 +17,7 @@
 namespace tcp
 {
 class TcpServerLauncher;
-class TcpServer : public core::base::Component
+class TcpServer : public core::base::TSComponent
 {
 private:
     TcpServerLauncher *m_pLauncher;
@@ -49,13 +49,13 @@ public:
     void Join();
 };
 
-class TcpServerLauncher : public core::base::BaseThread
+class TcpServerLauncher : public core::base::TSThread
 {
 private:
     TcpServer *m_pServer;
 
 public:
-    TcpServerLauncher(int iThreadID, TcpServer *pServer) : BaseThread(iThreadID), m_pServer(pServer)
+    TcpServerLauncher(int iThreadID, TcpServer *pServer) : TSThread(iThreadID), m_pServer(pServer)
     {
     }
 

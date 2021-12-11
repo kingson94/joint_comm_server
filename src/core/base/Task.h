@@ -1,6 +1,6 @@
 /*
 * File: Task.h
-* Class: Task
+* Class: TSTask
 * Created: 20211127
 * Author: SonTV
 */
@@ -12,18 +12,18 @@ namespace core
 {
 namespace base
 {
-class Task
+class TSTask
 {
 private:
     int m_iType;
-    Context *m_pContext;
+    TSContext *m_pContext;
 
 public:
-    Task(const int &iType, Context *pContext) : m_iType(iType), m_pContext(pContext)
+    TSTask(const int &iType, TSContext *pContext) : m_iType(iType), m_pContext(pContext)
     {
     }
 
-    ~Task()
+    ~TSTask()
     {
         SAFE_DEL(m_pContext);
     }
@@ -33,7 +33,7 @@ public:
         return m_iType;
     }
 
-    Context* GetContext()
+    TSContext* GetContext()
     {
         return m_pContext;
     }

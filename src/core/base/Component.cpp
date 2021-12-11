@@ -1,6 +1,6 @@
 /*
 * File: Component.cpp
-* Class: Component
+* Class: TSComponent
 * Created: 20211031
 * Author: SonTV
 */
@@ -9,28 +9,28 @@ namespace core
 {
 namespace base
 {
-Component::Component(const std::string &strComponentID) : m_strComponentID(strComponentID), m_bIsInit(false)
+TSComponent::TSComponent(const std::string &strComponentID) : m_strComponentID(strComponentID), m_bIsInit(false)
 {
 }
 
-Component::~Component()
+TSComponent::~TSComponent()
 {
 }
 
-void Component::Run()
+void TSComponent::Run()
 {
 }
 
-void Component::Join()
+void TSComponent::Join()
 {
 }
 
-void Component::Init()
+void TSComponent::Init()
 {
     m_bIsInit = true;
 }
 
-const std::string Component::GetID() const
+const std::string TSComponent::GetID() const
 {
     return m_strComponentID;
 }

@@ -10,10 +10,10 @@
 #define TCP_SERVER_CONFIG_FILE "config/tcp_server.json"
 #define TCP_CLIENT_CONFIG_FILE "config/tcp_client.json"
 #define ENGINE_CONFIG_FILE "config/engine.json"
+#define SERVICE_CONFIG_FILE "config/service.json"
 
 // Engine serivces
-#define TCP_READ_SERVICE_TYPE 0
-#define TCP_SERVICE_TYPE 1
+#define SOCKET_READ_SERVICE_ID 0
 
 // Tcp
 #define DEFAULT_TCP_PORT 8012

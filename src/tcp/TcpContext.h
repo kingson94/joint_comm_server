@@ -12,7 +12,7 @@
 
 namespace tcp
 {
-class TcpContext : public core::base::Context
+class TcpContext : public core::base::TSContext
 {
 private:
     ConnectionPtr m_pConnection;

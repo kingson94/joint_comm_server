@@ -14,7 +14,7 @@
 namespace tcp
 {
 class TcpClientLauncher;
-class TcpClient : public core::base::Component
+class TcpClient : public core::base::TSComponent
 {
 private:
     TcpClientLauncher *m_pLauncher;
@@ -42,13 +42,13 @@ public:
     void AttachAuthortoMessage(const std::string &strAuthorName, const std::string &strMessageIn, std::string &strMessageOut);
 };
 
-class TcpClientLauncher : public core::base::BaseThread
+class TcpClientLauncher : public core::base::TSThread
 {
 private:
     TcpClient *m_pClient;
 
 public:
-    TcpClientLauncher(int iThreadID, TcpClient *pClient) : BaseThread(iThreadID), m_pClient(pClient)
+    TcpClientLauncher(int iThreadID, TcpClient *pClient) : TSThread(iThreadID), m_pClient(pClient)
     {
     }
 

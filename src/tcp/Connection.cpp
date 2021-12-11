@@ -9,8 +9,8 @@
 #include "core/operator/Engine.h"
 #include "AppManager.h"
 #include "core/base/Task.h"
-#include "service/connection/TcpReadService.h"
-#include "tcp/ReadContext.h"
+#include "service/ServiceDefine.h"
+#include "tcp/SocketReadContext.h"
 #include "tcp/TcpContext.h"
 #include <unistd.h>
 #include "util/Utils.h"
@@ -38,8 +38,8 @@ void Connection::PuskTaskReadSocket()
 {
     if (m_pEngine)
     {
-        core::base::Context *pContext = new tcp::ReadContext(std::make_shared<Connection>(m_iFD));
-        core::base::Task *pTask = new core::base::Task(TCP_READ_SERVICE_TYPE, pContext);
+        core::base::TSContext *pContext = new tcp::SocketReadContext(std::make_shared<Connection>(m_iFD));
+        core::base::TSTask *pTask = new core::base::TSTask(SOCKET_READ_SERVICE_ID, pContext);
         m_pEngine->PushTask(pTask);
     }
 }
@@ -106,8 +106,8 @@ void Connection::PuskTaskProcessService(MessagePtr pMessage)
     if (m_pEngine)
     {
         ConnectionPtr pConnection = m_pTcpServer->GetConnection(m_iFD);
-        core::base::Context *pTcpContext = new TcpContext(pMessage, pConnection);
-        core::base::Task *pTask = new core::base::Task(TCP_SERVICE_TYPE, pTcpContext);
+        core::base::TSContext *pTcpContext = new TcpContext(pMessage, pConnection);
+        core::base::TSTask *pTask = new core::base::TSTask(pMessage->GetRequestID(), pTcpContext);
         m_pEngine->PushTask(pTask);
     }
 }

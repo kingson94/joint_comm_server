@@ -25,16 +25,17 @@ public:
 
     // Register comp
     void RegisterComponents();
-    ComponentPtr GetComponent(const std::string &strComponentID);
+    TSComponentPtr GetComponent(const std::string &strComponentID);
     void SendMessageToEndpoint(const std::string &strMessage);
     void SetRunningMode(const int &iMode);
     int GetRunningMode() const;
 
     void SetProfile(const std::string &strAlias = "");
+    int RegisterService();
 
 private:
     static AppManager* s_pIntance;
-    std::unordered_map<std::string, ComponentPtr> m_hmComponent;
+    std::unordered_map<std::string, TSComponentPtr> m_hmComponent;
     session::Profile m_obProfile;
     int m_iRunningMode;
 };

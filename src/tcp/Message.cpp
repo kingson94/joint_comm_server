@@ -8,11 +8,11 @@
 #include "AppDefine.h"
 #include <cstring>
 
-// Magigc 2B|Size 4B|Type 2B|Data
+// Magigc 2B|Size 4B|ID 2B|Data
 namespace tcp
 {
-Message::Message(const int &iSize, char* pData, const int &iType) 
-: m_iDataSize(iSize), m_szData(pData), m_iRequestType(iType)
+Message::Message(const int &iSize, char* pData, const int &iRqID) 
+: m_iDataSize(iSize), m_szData(pData), m_iRequestID(iRqID)
 {
 }
 
@@ -36,9 +36,9 @@ void Message::GetEncodeData(std::string &strEncodedData)
     pTmpPacket[4] = (iPacketSize >> 8) & 0xFF;
     pTmpPacket[5] = iPacketSize & 0xFF;
 
-    // Request type
-    pTmpPacket[6] = (m_iRequestType >> 8) & 0xFF;
-    pTmpPacket[7] = m_iRequestType & 0xFF;
+    // Request id
+    pTmpPacket[6] = (m_iRequestID >> 8) & 0xFF;
+    pTmpPacket[7] = m_iRequestID & 0xFF;
 
     // Data
     memcpy(pTmpPacket + TCP_HEADER_SIZE, m_szData, m_iDataSize);
@@ -55,5 +55,10 @@ int Message::GetDataSize()
 char* Message::GetData()
 {
     return m_szData;
+}
+
+int Message::GetRequestID()
+{
+    return m_iRequestID;
 }
 } // namespace tcp

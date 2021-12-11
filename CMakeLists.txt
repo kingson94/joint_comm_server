@@ -19,6 +19,7 @@ file(GLOB SOURCES
     src/tcp/*.cpp
     src/service/*.cpp
     src/service/connection/*.cpp
+    src/service/authentication/*.cpp
     src/profile/*.cpp
 )
 

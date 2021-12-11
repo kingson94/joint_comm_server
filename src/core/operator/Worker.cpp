@@ -14,7 +14,7 @@ namespace core
 {
 namespace op
 {
-Worker::Worker(const int &iThreadID) : base::BaseThread(iThreadID)
+Worker::Worker(const int &iThreadID) : base::TSThread(iThreadID)
 {
 
 }

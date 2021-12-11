@@ -1,6 +1,6 @@
 /*
-* File: ReadContext.h
-* Class: ReadContext
+* File: SocketReadContext.h
+* Class: SocketReadContext
 * Created: 20211127
 * Author: SonTV
 */
@@ -11,17 +11,17 @@
 
 namespace tcp
 {
-class ReadContext: public core::base::Context
+class SocketReadContext: public core::base::TSContext
 {
 private:
 	ConnectionPtr m_pConnection;
 
 public:
-	ReadContext(ConnectionPtr pConnection) : Context(), m_pConnection(pConnection)
+	SocketReadContext(ConnectionPtr pConnection) : TSContext(), m_pConnection(pConnection)
 	{
 	}
 
-	virtual ~ReadContext()
+	virtual ~SocketReadContext()
 	{
 	}
     

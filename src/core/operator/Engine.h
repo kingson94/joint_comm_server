@@ -12,8 +12,8 @@
 #include <condition_variable>
 #include <vector>
 #include <unordered_map>
-#include "service/connection/TcpReadService.h"
-// #include "service/TcpService.h"
+#include "service/ServiceDefine.h"
+#include "core/base/Service.h"
 #include <memory>
 #include "Worker.h"
 
@@ -21,7 +21,7 @@ namespace core
 {
 namespace base
 {
-class Task;
+class TSTask;
 }
 }
 
@@ -29,7 +29,7 @@ namespace core
 {
 namespace op
 {
-class Engine : public core::base::Component
+class Engine : public core::base::TSComponent
 {
 private:
     // Read/Write mutexes
@@ -40,16 +40,16 @@ private:
     boost::condition_variable m_cvQueueFull;
     boost::condition_variable m_cvQueueEmpty;
 
-    core::base::Task **m_pQueueBegin;
-    core::base::Task **m_pQueueEnd;
-    core::base::Task **m_pFirstTask;
-    core::base::Task **m_pLastTask;
-    core::base::Task **m_pNextTask;
+    core::base::TSTask **m_pQueueBegin;
+    core::base::TSTask **m_pQueueEnd;
+    core::base::TSTask **m_pFirstTask;
+    core::base::TSTask **m_pLastTask;
+    core::base::TSTask **m_pNextTask;
 
     int m_iWorkerCount;
     int m_iQueueSize;
     std::vector<WorkerPtr> m_vWorker;
-    std::unordered_map<int, ServicePtr> m_hmService;
+    std::unordered_map<int, TSServicePtr> m_hmService;
 
 public:
     Engine();
@@ -59,10 +59,10 @@ public:
     void Run() override;
     void Join() override;
     void ConsumeTask();
-    void PushTask(core::base::Task *pTask);
-    core::base::Task* GetTask();
+    void PushTask(core::base::TSTask *pTask);
+    core::base::TSTask* GetTask();
 
-    void RegisterService(ServicePtr pService);
+    void RegisterService(TSServicePtr pService);
 };
 } // namespace op
 } // namespace core

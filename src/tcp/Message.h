@@ -15,15 +15,16 @@ class Message
 private:
     char* m_szData;
     int m_iDataSize;
-    int m_iRequestType;
+    int m_iRequestID;
 
 public:
-    Message(const int &iDataSize, char* pData, const int &iRequestType);   
+    Message(const int &iDataSize, char* pData, const int &iRqID);   
     ~Message();
 
     int GetDataSize();
     void GetEncodeData(std::string &strEncodedData);
     char* GetData();
+    int GetRequestID();
 };
 } // namespace tcp
 

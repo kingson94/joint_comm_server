@@ -1,6 +1,6 @@
 /*
 * File: Thread.cpp
-* Class: Thread
+* Class: TSThread
 * Created: 20211127
 * Author: SonTV
 */
@@ -10,19 +10,19 @@ namespace core
 {
 namespace base
 {
-BaseThread::BaseThread(const int &iThreadID) : m_iThreadID(iThreadID), m_pThread(NULL)
+TSThread::TSThread(const int &iThreadID) : m_iThreadID(iThreadID), m_pThread(NULL)
 {
 }
 
-BaseThread::~BaseThread()
+TSThread::~TSThread()
 {
 }
 
-void BaseThread::Start()
+void TSThread::Start()
 {
     if (m_pThread == NULL)
     {
-        m_pThread.reset(new std::thread(std::bind(&BaseThread::Run, this)));
+        m_pThread.reset(new std::thread(std::bind(&TSThread::Run, this)));
     }
     else
     {
@@ -30,7 +30,7 @@ void BaseThread::Start()
     }
 }
 
-void BaseThread::Join()
+void TSThread::Join()
 {
     if (m_pThread)
     {

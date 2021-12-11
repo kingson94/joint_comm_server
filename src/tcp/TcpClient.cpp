@@ -16,7 +16,7 @@
 
 namespace tcp
 {
-TcpClient::TcpClient() : core::base::Component(TCP_CLIENT_COMP), m_iClientFD(-1), m_strServerHost(""), m_iServerPort(-1)
+TcpClient::TcpClient() : core::base::TSComponent(TCP_CLIENT_COMP), m_iClientFD(-1), m_strServerHost(""), m_iServerPort(-1)
 {
 }
 
@@ -123,7 +123,7 @@ void TcpClient::AttachAuthortoMessage(const std::string &strAuthorName, const st
 
 void TcpClient::Init()
 {
-    Component::Init();
+    TSComponent::Init();
     // Load local config
     nlohmann::json jConfig;
     if (util::Utils::LoadJsonFromFile(TCP_CLIENT_CONFIG_FILE, jConfig) == 0)

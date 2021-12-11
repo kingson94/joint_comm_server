@@ -1,0 +1,45 @@
+{
+    "authorization_prefix": 1,
+    "messageing_prefix": 2,
+    "chat_prefix": 3,
+    "call_prefix": 4,
+    "contact_prefix": 5,
+    "service_info":
+    [
+        {
+            "name": "authenticate",
+            "id": 11,
+            "category": "authorization",
+            "description": "Authenticate to the system",
+            "request": {
+                "username": "",
+                "password": ""
+            },
+            "reply": {
+                "error_code": 0,
+                "user_id": 0,
+                "session_id": 0
+            }
+        },
+        {
+            "name": "login",
+            "id": 12,
+            "category": "authorization",
+            "description": "Login to system to get session",
+            "request": {
+                "user_id": "",
+                "session_id": ""
+            },
+            "reply": {
+                "error_code": 0,
+                "profile": {
+                    "name": "",
+                    "description": "",
+                    "status": "",
+                    "dob": 0,
+                    "avatar": ""
+                }
+            }
+        }
+    ]
+}

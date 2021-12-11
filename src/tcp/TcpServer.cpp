@@ -19,7 +19,7 @@
 
 namespace tcp
 {
-TcpServer::TcpServer() : Component(TCP_SERVER_COMP), m_pLauncher(NULL), m_iServerFD(-1), m_strHost(""), m_iPort(DEFAULT_TCP_PORT)
+TcpServer::TcpServer() : TSComponent(TCP_SERVER_COMP), m_pLauncher(NULL), m_iServerFD(-1), m_strHost(""), m_iPort(DEFAULT_TCP_PORT)
 {
 }
 
@@ -53,7 +53,7 @@ void TcpServer::Run()
 
 void TcpServer::Init()
 {
-    Component::Init();
+    TSComponent::Init();
 
     // Load tcp config here
     nlohmann::json jConfig;

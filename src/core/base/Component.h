@@ -1,6 +1,6 @@
 /*
 * File: Component.h
-* Class: Component
+* Class: TSComponent
 * Created: 20211031
 * Author: SonTV
 */
@@ -12,11 +12,11 @@ namespace core
 {
 namespace base
 {
-class Component
+class TSComponent
 {
 public:
-    Component(const std::string &strComponentID);
-    virtual ~Component();
+    TSComponent(const std::string &strComponentID);
+    virtual ~TSComponent();
     
     virtual void Init();
     virtual void Run();
@@ -31,4 +31,4 @@ protected:
 } // namespace base
 } // namespace core
 
-typedef std::shared_ptr<core::base::Component> ComponentPtr;
+typedef std::shared_ptr<core::base::TSComponent> TSComponentPtr;

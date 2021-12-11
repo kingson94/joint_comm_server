@@ -1,6 +1,6 @@
 /*
 * File: Thread.h
-* Class: BaseThread
+* Class: TSThread
 * Created: 20211106
 * Author: SonTV
 */
@@ -15,15 +15,15 @@ namespace core
 {
 namespace base
 {
-class BaseThread
+class TSThread
 {
 protected:
     int m_iThreadID;
     ThreadPtr m_pThread;
 
 public:
-    explicit BaseThread(const int &iThreadID);
-    ~BaseThread();
+    explicit TSThread(const int &iThreadID);
+    ~TSThread();
 
     virtual void Run() = 0;
     void Start();

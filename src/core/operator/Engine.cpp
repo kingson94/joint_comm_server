@@ -8,35 +8,23 @@
 #include "core/base/Task.h"
 #include "core/operator/Worker.h"
 #include "util/Utils.h"
-
-#include "service/connection/TcpReadService.h"
 #include "AppDefine.h"
-#include "service/TcpService.h"
+#include "service/ServiceDefine.h"
 
 namespace core
 {
 namespace op
 {
-Engine::Engine() : Component(ENGINE_COMP)
+Engine::Engine() : TSComponent(ENGINE_COMP)
 , m_pFirstTask(NULL), m_pLastTask(NULL), m_pNextTask(NULL)
 , m_pQueueBegin(NULL), m_pQueueEnd(NULL), m_iWorkerCount(DEFAULT_WORKER_COUNT)
 , m_iQueueSize(DEFAULT_QUEUE_SIZE)
 {
-    ServicePtr pReadService = std::make_shared<service::TcpReadService>();
-    ServicePtr pTcpService = std::make_shared<service::TcpService>();
-
-    RegisterService(pReadService);
-    RegisterService(pTcpService);
 }
 
 Engine::~Engine()
 {
     SAFE_DEL(m_pQueueBegin);
-
-    // for (auto &pWorker : m_vWorker)
-    // {
-    //     pWorker->Join();
-    // }
 }
 
 void Engine::Join()
@@ -53,7 +41,7 @@ void Engine::Init()
         m_iQueueSize = jConfig["queue_size"].get<int>();
     }
 
-    m_pQueueBegin = (base::Task**) new base::Task*[m_iQueueSize];
+    m_pQueueBegin = (base::TSTask**) new base::TSTask*[m_iQueueSize];
     m_pQueueEnd = m_pQueueBegin + m_iQueueSize;
 
     m_pFirstTask = m_pQueueBegin;
@@ -67,11 +55,11 @@ void Engine::Init()
     }
 }
 
-void Engine::RegisterService(ServicePtr pService)
+void Engine::RegisterService(TSServicePtr pService)
 {
     if (pService)
     {
-        m_hmService[pService->GetType()] = pService;
+        m_hmService[pService->GetID()] = pService;
     }
 }
 
@@ -114,7 +102,7 @@ void Engine::ConsumeTask()
     }
 }
 
-void Engine::PushTask(core::base::Task *pTask)
+void Engine::PushTask(core::base::TSTask *pTask)
 {
     bool bQueueIsEmpty = false;
 
@@ -151,11 +139,11 @@ void Engine::PushTask(core::base::Task *pTask)
     }
 }
 
-core::base::Task* Engine::GetTask()
+core::base::TSTask* Engine::GetTask()
 {
     // Dequeue
     bool bQueueIsFull = false;
-    core::base::Task* pRetTask = NULL;
+    core::base::TSTask* pRetTask = NULL;
 
     boost::mutex::scoped_lock lckRead(m_mtxQueueRead);
     while (m_pFirstTask == m_pLastTask)

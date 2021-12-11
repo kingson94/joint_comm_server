@@ -1,6 +1,6 @@
 /*
 * File: Service.h
-* Class: Service
+* Class: TSService
 * Created: 20211127
 * Author: SonTV
 */
@@ -12,28 +12,33 @@ namespace core
 {
 namespace base
 {
-class Service
+class TSService
 {
 protected:
-	int m_iType;
+	int m_iID;
 
 public:
-	Service(const int &iType): m_iType(iType)
+	TSService()
 	{
 	}
 
-	virtual ~Service()
+	virtual ~TSService()
 	{
 	}
 
-    int GetType()
+    int GetID()
 	{
-		return m_iType;
+		return m_iID;
 	}
 
-	virtual bool ProcessRequest(Context *pContext) = 0;
+	void SetID(const int &iID)
+	{
+		m_iID = iID;
+	}
+
+	virtual bool ProcessRequest(TSContext *pContext) = 0;
 };
 }  // namespace base
 }  // namespace core
 
-typedef std::shared_ptr<core::base::Service> ServicePtr;
+typedef std::shared_ptr<core::base::TSService> TSServicePtr;

@@ -11,6 +11,7 @@
 #include "core/operator/Engine.h"
 #include <iostream>
 #include "AppDefine.h"
+#include "service/ServiceDefine.h"
 
 namespace core
 {
@@ -112,7 +113,7 @@ void AppManager::RegisterComponents()
     }
 }
 
-ComponentPtr AppManager::GetComponent(const std::string &strComponentID)
+TSComponentPtr AppManager::GetComponent(const std::string &strComponentID)
 {
     auto pIter = m_hmComponent.find(strComponentID);
     if (pIter != m_hmComponent.end())
@@ -121,6 +122,68 @@ ComponentPtr AppManager::GetComponent(const std::string &strComponentID)
     }
 
     return NULL;
+}
+
+int AppManager::RegisterService()
+{
+    nlohmann::json jServiceConfig;
+    nlohmann::json jServiceInfo;
+    std::string strSerivceName = "";
+    int iServiceID = -1;
+    core::op::Engine *pEngine = NULL;
+    auto pEngineIter = m_hmComponent.find(ENGINE_COMP);
+
+    if (pEngineIter != m_hmComponent.end())
+    {
+        pEngine = (core::op::Engine*) pEngineIter->second.get();
+        if (!pEngine)
+        {
+            TSLOG2(tslog::LL_ERROR, "[App] Engine component not found");
+            return 1;
+        }
+    }
+
+    if (util::Utils::LoadJsonFromFile(SERVICE_CONFIG_FILE, jServiceConfig) != 0)
+    {
+        TSLOG2(tslog::LL_ERROR, "[App] Cannot load config file: %s", SERVICE_CONFIG_FILE);
+        return 2;
+    }
+
+    // Register read socket
+    {
+        auto pSocketReadService = std::make_shared<service::SocketReadService>();
+        pSocketReadService->SetID(SOCKET_READ_SERVICE_ID);
+        pEngine->RegisterService(pSocketReadService);
+    }
+    
+    try
+    {
+        jServiceInfo = jServiceConfig["service_info"].array();
+        // Loop and register service
+        for (auto const &obValue : jServiceInfo)
+        {
+            TSServicePtr pService = NULL;
+            strSerivceName = obValue["name"];
+            if (strSerivceName == "authenticate")
+            {
+                pService = std::make_shared<service::AuthenticateService>();
+            }
+            else if (strSerivceName == "login")
+            {
+                pService = std::make_shared<service::LoginService>();
+                
+            }
+
+            pService->SetID(obValue["id"]);
+            pEngine->RegisterService(pService);
+        }
+    }
+    catch (std::exception &ex)
+    {
+        TSLOG2(tslog::LL_ERROR, "[App] Reading json file get error: %s", ex.what());
+        return 3;
+    }
+
 }
 
 void AppManager::SetProfile(const std::string &strAlias/* = ""*/)

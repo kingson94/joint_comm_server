@@ -9,7 +9,7 @@
 
 namespace tcp
 {
-TcpContext::TcpContext(MessagePtr pMessage, ConnectionPtr pConnection) : core::base::Context()
+TcpContext::TcpContext(MessagePtr pMessage, ConnectionPtr pConnection) : core::base::TSContext()
 , m_pConnection(pConnection), m_pMessage(pMessage)
 {
 }

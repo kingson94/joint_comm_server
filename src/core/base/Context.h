@@ -1,6 +1,6 @@
 /*
 * File: Context.h
-* Class: Context
+* Class: TSContext
 * Created: 20211127
 * Author: SonTV
 */
@@ -10,14 +10,14 @@ namespace core
 {
 namespace base
 {
-class Context
+class TSContext
 {
 public:
-	Context()
+	TSContext()
 	{
 	}
 
-	virtual ~Context()
+	virtual ~TSContext()
 	{
 	}
 };
