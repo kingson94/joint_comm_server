@@ -3,7 +3,6 @@
 #include <signal.h>
 #include <iostream>
 #include "tcp/TcpServer.h"
-#include "tcp/TcpClient.h"
 #include "util/Utils.h"
 #include "AppDefine.h"
 
@@ -65,13 +64,6 @@ int main(int argc, char **argv)
 				continue;
             }
 
-			if (strcmp(argv[i], "-client") == 0)
-            {
-				// Client
-				iRunningMode = RUNNING_MODE_CLIENT;
-				continue;
-            }
-
 			if (strcmp(argv[i], "-alias") == 0)
             {
 				// Client
@@ -121,48 +113,8 @@ int main(int argc, char **argv)
 
 		// Register app component
 		pAppInstance->RegisterComponents();
-	
-		if (iRunningMode == RUNNING_MODE_CLIENT)
-		{
-			pAppInstance->SetProfile(strAlias);
-		}
-
 		pAppInstance->Init();
 		pAppInstance->Run();
-	}
-
-	if (iRunningMode == RUNNING_MODE_CLIENT)
-	{
-		if (bIsBenchmark)
-		{
-			std::string strMessage = "The quick brown fox jumps over the lazy dog ";
-			for (int i = 0; i < iBenchTimes; i++)
-			{
-				pAppInstance->SendMessageToEndpoint(strMessage + std::to_string(i));
-				std::this_thread::sleep_for(std::chrono::milliseconds(100));
-			}
-		}
-		else
-		{
-			while (true)
-			{
-				std::string strTerChars = "";
-				printf("Enter message (Q/q to exit): ");
-				std::getline(std::cin, strTerChars);
-
-				if (strTerChars == "Q" || strTerChars == "q")
-				{
-					return 0;
-				}
-
-				pAppInstance->SendMessageToEndpoint(strTerChars);
-				std::this_thread::sleep_for(std::chrono::microseconds(10));
-			}
-		}
-	}
-	else
-	{
-		// Server is a read only app =))
 	}
 	
 	// pAppInstance->DestroyInstance();

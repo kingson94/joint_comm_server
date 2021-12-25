@@ -7,7 +7,7 @@
 #include "AppManager.h"
 #include "log/LogDefine.h"
 #include "tcp/TcpServer.h"
-#include "tcp/TcpClient.h"
+#include "http/HttpServer.h"
 #include "core/operator/Engine.h"
 #include <iostream>
 #include "AppDefine.h"
@@ -62,35 +62,14 @@ void AppManager::Run()
 
 void AppManager::SendMessageToEndpoint(const std::string &strMessage)
 {
-    if (m_iRunningMode == RUNNING_MODE_SERVER)
+    auto pCompIter = m_hmComponent.find(TCP_SERVER_COMP);
+    if (pCompIter != m_hmComponent.end())
     {
-        auto pCompIter = m_hmComponent.find(TCP_SERVER_COMP);
-        if (pCompIter != m_hmComponent.end())
+        auto pServer = (tcp::TcpServer*) pCompIter->second.get();
+        if (pServer)
         {
-            auto pServer = (tcp::TcpServer*) pCompIter->second.get();
-            if (pServer)
-            {
-                // pServer->SendMessage(strMessage);
-                return;
-            }
-        }
-    }
-    else if (m_iRunningMode == RUNNING_MODE_CLIENT)
-    {
-        auto pCompIter = m_hmComponent.find(TCP_CLIENT_COMP);
-        if (pCompIter != m_hmComponent.end())
-        {
-            auto pClient = (tcp::TcpClient*) pCompIter->second.get();
-            if (pClient)
-            {
-                std::string strAuthorizedMsg = "";
-                char* szMessage = NULL;
-                pClient->AttachAuthortoMessage(m_obProfile.GetAlias(), strMessage, strAuthorizedMsg);
-                szMessage = new char[strAuthorizedMsg.size()];
-                memcpy(szMessage, strAuthorizedMsg.c_str(), strAuthorizedMsg.size());
-                MessagePtr pMessage = std::make_shared<tcp::Message>(strAuthorizedMsg.size(), szMessage, 0);
-                pClient->SendMessage(pMessage);
-            }
+            // pServer->SendMessage(strMessage);
+            return;
         }
     }
 }
@@ -98,19 +77,12 @@ void AppManager::SendMessageToEndpoint(const std::string &strMessage)
 void AppManager::RegisterComponents()
 {
     std::shared_ptr<core::op::Engine> pEngine = std::make_shared<core::op::Engine>();
+    std::shared_ptr<tcp::TcpServer> pTcpServer = std::make_shared<tcp::TcpServer>();
+    std::shared_ptr<http::HttpServer> pHttpServer = std::make_shared<http::HttpServer>();
+
     m_hmComponent[pEngine->GetID()] = pEngine;
-    if (m_iRunningMode == RUNNING_MODE_SERVER)
-    {
-        TSLOG(tslog::LL_DEBUG, "[App] Register server");
-        std::shared_ptr<tcp::TcpServer> pTcpServer = std::make_shared<tcp::TcpServer>();
-        m_hmComponent[pTcpServer->GetID()] = pTcpServer;
-    }
-    else if (m_iRunningMode == RUNNING_MODE_CLIENT)
-    {
-        TSLOG(tslog::LL_DEBUG, "[App] Register client");
-        std::shared_ptr<tcp::TcpClient> pTcpClient = std::make_shared<tcp::TcpClient>();
-        m_hmComponent[pTcpClient->GetID()] = pTcpClient;
-    }
+    m_hmComponent[pTcpServer->GetID()] = pTcpServer;
+    m_hmComponent[pHttpServer->GetID()] = pHttpServer;
 }
 
 TSComponentPtr AppManager::GetComponent(const std::string &strComponentID)
@@ -184,28 +156,6 @@ int AppManager::RegisterService()
         return 3;
     }
 
-}
-
-void AppManager::SetProfile(const std::string &strAlias/* = ""*/)
-{
-    if (!strAlias.empty())
-    {
-        m_obProfile.SetAlias(strAlias);
-    }
-    else
-    {
-        std::string strBuffer = "";
-        while (true)
-        {
-            printf("Enter your name: ");
-            std::getline(std::cin, strBuffer);
-            if (!strBuffer.empty())
-            {
-                m_obProfile.SetAlias(strBuffer);
-                break;
-            }
-        }
-    }
 }
 
 void AppManager::SetRunningMode(const int &iMode)

@@ -23,7 +23,6 @@
 
 // App
 #define RUNNING_MODE_SERVER 0
-#define RUNNING_MODE_CLIENT 1
 
 // Engine
 #define DEFAULT_QUEUE_SIZE 1000
@@ -31,8 +30,8 @@
 
 // Component
 #define ENGINE_COMP "ENGINE_COMP"
-#define TCP_CLIENT_COMP "TCP_CLIENT_COMP"
 #define TCP_SERVER_COMP "TCP_SERVER_COMP"
+#define HTTP_SERVER_COMP "HTTP_SERVER_COMP"
 
 // Memory
 #ifndef SAFE_DEL

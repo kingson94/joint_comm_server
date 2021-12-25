@@ -19,7 +19,7 @@ private:
 
 public:
     Message(const int &iDataSize, char* pData, const int &iRqID);   
-    ~Message();
+    virtual ~Message();
 
     int GetDataSize();
     void GetEncodeData(std::string &strEncodedData);

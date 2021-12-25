@@ -7,7 +7,6 @@
 #pragma once
 #include <unordered_map>
 #include "core/base/Component.h"
-#include "profile/Profile.h"
 #include "util/Utils.h"
 
 namespace core
@@ -30,13 +29,11 @@ public:
     void SetRunningMode(const int &iMode);
     int GetRunningMode() const;
 
-    void SetProfile(const std::string &strAlias = "");
     int RegisterService();
 
 private:
     static AppManager* s_pIntance;
     std::unordered_map<std::string, TSComponentPtr> m_hmComponent;
-    session::Profile m_obProfile;
     int m_iRunningMode;
 };
 } // namespace core
