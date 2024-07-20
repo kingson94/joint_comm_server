@@ -88,15 +88,15 @@ void TcpServer::Listen()
     while (true)
     {
         int nEventCount = 0;
-		nEventCount = epoll_wait(m_iEpollFD, pEpollEvents, 1000, -1);
-		for (int i = 0; i < nEventCount; i++)
+        nEventCount = epoll_wait(m_iEpollFD, pEpollEvents, 1000, -1);
+        for (int i = 0; i < nEventCount; i++)
         {
             if ((pEpollEvents[i].events & EPOLLERR) || (pEpollEvents[i].events & EPOLLHUP))
-			{
-				CloseConnection(pEpollEvents[i].data.fd);
-				continue;
-			}
-			else if (m_setAcceptedFD.count(pEpollEvents[i].data.fd) > 0) // New incoming fd -> accept
+            {
+                CloseConnection(pEpollEvents[i].data.fd);
+                continue;
+            }
+            else if (m_setAcceptedFD.count(pEpollEvents[i].data.fd) > 0) // New incoming fd -> accept
             {
                 while (true)
                 {
@@ -170,7 +170,7 @@ int TcpServer::OpenConnection(const std::string &strHost, const int &iPort)
 {
     int iListenFD = CreateBoundSocket(strHost, iPort);
     int iResult = -1;
-	struct epoll_event stEpollEvent;
+    struct epoll_event stEpollEvent;
 
     if (iListenFD == -1)
     {
@@ -179,29 +179,29 @@ int TcpServer::OpenConnection(const std::string &strHost, const int &iPort)
     }
 
     iResult = MakeNonBlockingFD(iListenFD);
-	if (iResult == -1)
-	{
+    if (iResult == -1)
+    {
         TSLOG2(tslog::LL_DEBUG, "[TcpServer] Error on making socket non-blocking %d", iListenFD);
-		CloseConnection(iListenFD);
-		return -1;
-	}
+        CloseConnection(iListenFD);
+        return -1;
+    }
 
     iResult = listen(iListenFD, SOMAXCONN);
     if (iResult == -1)
-	{
+    {
         TSLOG2(tslog::LL_DEBUG, "[TcpServer] Error on socket listening %d", iListenFD);
-		CloseConnection(iListenFD);
-		return -1;
-	}
+        CloseConnection(iListenFD);
+        return -1;
+    }
 
-	stEpollEvent.data.fd = iListenFD;
-	stEpollEvent.events = EPOLLIN | EPOLLET;
-	iResult = epoll_ctl(m_iEpollFD, EPOLL_CTL_ADD, iListenFD, &stEpollEvent);
-	if (iResult == -1)
-	{
-		TSLOG(tslog::LL_DEBUG, "[TcpServer] Error in epoll add");
-		return -1;
-	}
+    stEpollEvent.data.fd = iListenFD;
+    stEpollEvent.events = EPOLLIN | EPOLLET;
+    iResult = epoll_ctl(m_iEpollFD, EPOLL_CTL_ADD, iListenFD, &stEpollEvent);
+    if (iResult == -1)
+    {
+        TSLOG(tslog::LL_DEBUG, "[TcpServer] Error in epoll add");
+        return -1;
+    }
 
     m_setAcceptedFD.insert(iListenFD);
     m_iServerFD = iListenFD;
@@ -290,7 +290,7 @@ int TcpServer::CreateBoundSocket(const std::string &strHost, const int &iPort)
     return iListenFD;
 }
 
-void TcpServer::SendMessage(MessagePtr pMessage)
+void TcpServer::SendMessage(TCPMessagePtr pMessage)
 {
     if (m_bIsInit)
     {

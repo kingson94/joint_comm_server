@@ -7,8 +7,8 @@
 * Author: SonTV
 */
 #include "core/base/Component.h"
-#include "boost/thread/mutex.hpp"
-#include "boost/thread.hpp"
+#include <mutex>
+#include <thread>
 #include <condition_variable>
 #include <vector>
 #include <unordered_map>
@@ -33,12 +33,12 @@ class Engine : public core::base::TSComponent
 {
 private:
     // Read/Write mutexes
-    boost::mutex m_mtxQueueWrite;
-    boost::mutex m_mtxQueueRead;
+    std::mutex m_mtxQueueWrite;
+    std::mutex m_mtxQueueRead;
 
     // Full/Empty conditions
-    boost::condition_variable m_cvQueueFull;
-    boost::condition_variable m_cvQueueEmpty;
+    std::condition_variable m_cvQueueFull;
+    std::condition_variable m_cvQueueEmpty;
 
     core::base::TSTask **m_pQueueBegin;
     core::base::TSTask **m_pQueueEnd;

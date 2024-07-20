@@ -17,7 +17,6 @@ file(GLOB SOURCES
     src/core/base/*.cpp
     src/core/operator/*.cpp
     src/tcp/*.cpp
-    src/http/*.cpp
     src/service/*.cpp
     src/service/connection/*.cpp
     src/service/authentication/*.cpp
@@ -27,7 +26,9 @@ file(GLOB SOURCES
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 # System libs
-set(SYS_LIBS pthread ssl crypto)
+target_compile_options(${PROJECT_NAME} PUBLIC -lpthread)
+
+set(SYS_LIBS ssl crypto)
 foreach (LIB ${SYS_LIBS})
     find_library(RESULT ${LIB})
     if (RESULT)
@@ -38,6 +39,3 @@ foreach (LIB ${SYS_LIBS})
     unset(RESULT CACHE)
 endforeach ()
 
-target_link_libraries(${PROJECT_NAME} "${PROJECT_SOURCE_DIR}/3rd/lib/libboost_thread.so")
-target_link_libraries(${PROJECT_NAME} "${PROJECT_SOURCE_DIR}/3rd/lib/libnghttp2.so")
-target_link_libraries(${PROJECT_NAME} "${PROJECT_SOURCE_DIR}/3rd/lib/libnghttp2_asio.so")

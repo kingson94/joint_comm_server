@@ -15,28 +15,28 @@ namespace base
 class TSService
 {
 protected:
-	int m_iID;
+    int m_iID;
 
 public:
-	TSService()
-	{
-	}
+    TSService()
+    {
+    }
 
-	virtual ~TSService()
-	{
-	}
+    virtual ~TSService()
+    {
+    }
 
     int GetID()
-	{
-		return m_iID;
-	}
+    {
+        return m_iID;
+    }
 
-	void SetID(const int &iID)
-	{
-		m_iID = iID;
-	}
+    void SetID(const int &iID)
+    {
+        m_iID = iID;
+    }
 
-	virtual bool ProcessRequest(TSContext *pContext) = 0;
+    virtual bool ProcessRequest(TSContext *pContext) = 0;
 };
 }  // namespace base
 }  // namespace core

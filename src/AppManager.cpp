@@ -7,7 +7,6 @@
 #include "AppManager.h"
 #include "log/LogDefine.h"
 #include "tcp/TcpServer.h"
-#include "http/HttpServer.h"
 #include "core/operator/Engine.h"
 #include <iostream>
 #include "AppDefine.h"
@@ -78,11 +77,9 @@ void AppManager::RegisterComponents()
 {
     std::shared_ptr<core::op::Engine> pEngine = std::make_shared<core::op::Engine>();
     std::shared_ptr<tcp::TcpServer> pTcpServer = std::make_shared<tcp::TcpServer>();
-    std::shared_ptr<http::HttpServer> pHttpServer = std::make_shared<http::HttpServer>();
 
     m_hmComponent[pEngine->GetID()] = pEngine;
     m_hmComponent[pTcpServer->GetID()] = pTcpServer;
-    m_hmComponent[pHttpServer->GetID()] = pHttpServer;
 }
 
 TSComponentPtr AppManager::GetComponent(const std::string &strComponentID)
@@ -136,11 +133,7 @@ int AppManager::RegisterService()
         {
             TSServicePtr pService = NULL;
             strSerivceName = obValue["name"];
-            if (strSerivceName == "authenticate")
-            {
-                pService = std::make_shared<service::AuthenticateService>();
-            }
-            else if (strSerivceName == "login")
+            if (strSerivceName == "login")
             {
                 pService = std::make_shared<service::LoginService>();
                 
@@ -156,6 +149,7 @@ int AppManager::RegisterService()
         return 3;
     }
 
+    return 0;
 }
 
 void AppManager::SetRunningMode(const int &iMode)

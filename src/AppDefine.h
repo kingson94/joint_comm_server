@@ -31,7 +31,6 @@
 // Component
 #define ENGINE_COMP "ENGINE_COMP"
 #define TCP_SERVER_COMP "TCP_SERVER_COMP"
-#define HTTP_SERVER_COMP "HTTP_SERVER_COMP"
 
 // Memory
 #ifndef SAFE_DEL

@@ -107,7 +107,7 @@ void Engine::PushTask(core::base::TSTask *pTask)
     bool bQueueIsEmpty = false;
 
     // Enqueue
-    boost::mutex::scoped_lock lckWrite(m_mtxQueueWrite);
+    std::unique_lock<std::mutex> lckWrite(m_mtxQueueWrite);
     while (m_pNextTask == m_pFirstTask)
     {
         // Wait here if queue is full
@@ -145,7 +145,7 @@ core::base::TSTask* Engine::GetTask()
     bool bQueueIsFull = false;
     core::base::TSTask* pRetTask = NULL;
 
-    boost::mutex::scoped_lock lckRead(m_mtxQueueRead);
+    std::unique_lock<std::mutex> lckRead(m_mtxQueueRead);
     while (m_pFirstTask == m_pLastTask)
     {
         // Wait here if queue is empty

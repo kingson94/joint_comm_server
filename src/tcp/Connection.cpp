@@ -49,7 +49,7 @@ int Connection::GetSocket()
     return m_iFD;
 }
 
-int Connection::WriteSocket(MessagePtr pMessage)
+int Connection::WriteSocket(TCPMessagePtr pMessage)
 {
     boost::mutex::scoped_lock lckWriteSock(m_mtxWriteSocket);
     if (!pMessage)
@@ -58,7 +58,7 @@ int Connection::WriteSocket(MessagePtr pMessage)
     }
 
     int iTotalSentByte = 0;
-	int iTryTimes = WRITE_TRY_TIMES_MAX;
+    int iTryTimes = WRITE_TRY_TIMES_MAX;
     std::string strEncodeData = "";
     int iEncodeSize = 0;
 
@@ -71,38 +71,38 @@ int Connection::WriteSocket(MessagePtr pMessage)
         return -1;
     }
 
-	while (iTotalSentByte < iEncodeSize)
-	{
+    while (iTotalSentByte < iEncodeSize)
+    {
         int iCurSentByte = write(m_iFD, strEncodeData.c_str(), iEncodeSize);
-		if (iCurSentByte == -1)
-		{
-			if (errno == EAGAIN || errno == EWOULDBLOCK)
-			{
-				iTryTimes--;
-				if (iTryTimes < 0)
-				{
+        if (iCurSentByte == -1)
+        {
+            if (errno == EAGAIN || errno == EWOULDBLOCK)
+            {
+                iTryTimes--;
+                if (iTryTimes < 0)
+                {
                     TSLOG2(tslog::LL_DEBUG, "[Connection] Tried times reach zero");
                     return -1;
-				}
-				usleep(100);
-			}
-			else
+                }
+                usleep(100);
+            }
+            else
             {
                 return -1;
             }
-		}
-		else
-		{
-			iTotalSentByte += iCurSentByte;
-			iTryTimes = WRITE_TRY_TIMES_MAX;
-		}
-	}
+        }
+        else
+        {
+            iTotalSentByte += iCurSentByte;
+            iTryTimes = WRITE_TRY_TIMES_MAX;
+        }
+    }
 
     return iTotalSentByte;
 }
 
-void Connection::PuskTaskProcessService(MessagePtr pMessage)
-{	
+void Connection::PuskTaskProcessService(TCPMessagePtr pMessage)
+{
     if (m_pEngine)
     {
         ConnectionPtr pConnection = m_pTcpServer->GetConnection(m_iFD);
@@ -157,16 +157,16 @@ bool Connection::ReadSocket()
             if (iReceived == TCP_HEADER_SIZE)
             {
                 if (szHeader[0] != MAGIC_PACKET_BYTE || szHeader[1] != MAGIC_PACKET_BYTE)
-				{
-					TSLOG(tslog::LL_DEBUG, "[Connection] Magic bytes are not matched");
-					TSLOG2(tslog::LL_DEBUG, "[Connection] Close connection: %d", m_iFD);
+                {
+                    TSLOG(tslog::LL_DEBUG, "[Connection] Magic bytes are not matched");
+                    TSLOG2(tslog::LL_DEBUG, "[Connection] Close connection: %d", m_iFD);
 
-					if (m_pTcpServer)
+                    if (m_pTcpServer)
                     {
                         m_pTcpServer->CloseConnection(m_iFD);
                     }
-					return true;
-				}
+                    return true;
+                }
 
                 nPacketSize += (szHeader[2] << 24);
                 nPacketSize += (szHeader[3] << 16);
@@ -215,7 +215,7 @@ bool Connection::ReadSocket()
             if (iReceived == nPacketSize)
             {
                 std::string strReadData = std::string(szPayload, nPacketSize - TCP_HEADER_SIZE);
-                MessagePtr pMessage = std::make_shared<tcp::Message>(nPacketSize - TCP_HEADER_SIZE, szPayload, iRequestType);
+                TCPMessagePtr pMessage = std::make_shared<tcp::TCPMessage>(nPacketSize - TCP_HEADER_SIZE, szPayload, iRequestType);
                 PuskTaskProcessService(pMessage);
                 return true;
             }

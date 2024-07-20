@@ -35,5 +35,4 @@ public: \
 }
 
 DECLARE_SERVICE(SocketRead)
-DECLARE_SERVICE(Authenticate)
 DECLARE_SERVICE(Login)

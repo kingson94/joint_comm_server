@@ -13,13 +13,13 @@ namespace base
 class TSContext
 {
 public:
-	TSContext()
-	{
-	}
+    TSContext()
+    {
+    }
 
-	virtual ~TSContext()
-	{
-	}
+    virtual ~TSContext()
+    {
+    }
 };
 } // namespace base
 } // namespace core

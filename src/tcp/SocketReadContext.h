@@ -14,20 +14,20 @@ namespace tcp
 class SocketReadContext: public core::base::TSContext
 {
 private:
-	ConnectionPtr m_pConnection;
+    ConnectionPtr m_pConnection;
 
 public:
-	SocketReadContext(ConnectionPtr pConnection) : TSContext(), m_pConnection(pConnection)
-	{
-	}
+    SocketReadContext(ConnectionPtr pConnection) : TSContext(), m_pConnection(pConnection)
+    {
+    }
 
-	virtual ~SocketReadContext()
-	{
-	}
+    virtual ~SocketReadContext()
+    {
+    }
     
-	ConnectionPtr GetConnection()
-	{
-		return m_pConnection;
-	}
+    ConnectionPtr GetConnection()
+    {
+        return m_pConnection;
+    }
 };
 } // namespace tcp

@@ -22,7 +22,7 @@ class TcpServer : public core::base::TSComponent
 private:
     TcpServerLauncher *m_pLauncher;
     int m_iServerFD;
-	int m_iEpollFD;
+    int m_iEpollFD;
 
     std::string m_strHost;
     int m_iPort;
@@ -42,7 +42,7 @@ public:
     void Run() override;
     void Init() override;
     void Listen();
-    void SendMessage(MessagePtr pMessage);
+    void SendMessage(TCPMessagePtr pMessage);
 
     void CloseConnection(const int &iFD);
     ConnectionPtr GetConnection(const int &iFD);

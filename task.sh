@@ -18,9 +18,12 @@ fi
 
 if [[ "$*" == *"-push"* ]]
 then
+	sshpass -p 1 sudo mkdir -p /opt/joint/
 	cd build
 	echo ".......---- Push to operation directory ---......."
-	scp joint /opt/joint/
+	sshpass -p 1 sudo scp joint /opt/joint/
+	cd ..
+	sshpass -p 1 sudo scp -r ./config/ /opt/joint/
 	echo ".......---- Pushing finished ---......."
 	cd ..
 fi

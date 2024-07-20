@@ -8,7 +8,7 @@
 #include <string>
 #include "boost/thread/mutex.hpp"
 #include <memory>
-#include "tcp/Message.h"
+#include "tcp/TCPMessage.h"
 
 namespace core
 {
@@ -29,7 +29,7 @@ private:
     boost::mutex m_mtxWriteSocket;
     TcpServer* m_pTcpServer;
     core::op::Engine* m_pEngine;
-    MessagePtr m_pMessage;
+    TCPMessagePtr m_pMessage;
 
 public:
     Connection(const int &iFD);
@@ -37,9 +37,9 @@ public:
     int GetSocket();
 
     void PuskTaskReadSocket();
-    void PuskTaskProcessService(MessagePtr pMessage);
+    void PuskTaskProcessService(TCPMessagePtr pMessage);
     bool ReadSocket();
-    int WriteSocket(MessagePtr pMessage);
+    int WriteSocket(TCPMessagePtr pMessage);
 }; 
 } // namespace tcp
 

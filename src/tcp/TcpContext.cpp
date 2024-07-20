@@ -9,7 +9,7 @@
 
 namespace tcp
 {
-TcpContext::TcpContext(MessagePtr pMessage, ConnectionPtr pConnection) : core::base::TSContext()
+TcpContext::TcpContext(TCPMessagePtr pMessage, ConnectionPtr pConnection) : core::base::TSContext()
 , m_pConnection(pConnection), m_pMessage(pMessage)
 {
 }
@@ -23,7 +23,7 @@ ConnectionPtr TcpContext::GetConnection()
     return m_pConnection;
 }
 
-MessagePtr TcpContext::GetMessage() const
+TCPMessagePtr TcpContext::GetMessage() const
 {
     return m_pMessage;
 }
