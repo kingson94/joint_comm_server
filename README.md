@@ -1,7 +1,7 @@
 # Joint
 Joint - Chat app version 1. For practicing
 
-# Requirements-
+# Requirements
 1. sshpass
 
         ubuntu ->   sudo yum install sshpass
