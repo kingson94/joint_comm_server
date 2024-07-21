@@ -2,7 +2,7 @@
 
 /*
 * File: Engine.h
-* Class: Engine
+* Class: TSEngine
 * Created: 20211127
 * Author: SonTV
 */
@@ -29,7 +29,7 @@ namespace core
 {
 namespace op
 {
-class Engine : public core::base::TSComponent
+class TSEngine : public core::base::TSComponent
 {
 private:
     // Read/Write mutexes
@@ -42,18 +42,18 @@ private:
 
     core::base::TSTask **m_pQueueBegin;
     core::base::TSTask **m_pQueueEnd;
-    core::base::TSTask **m_pFirstTask;
-    core::base::TSTask **m_pLastTask;
-    core::base::TSTask **m_pNextTask;
+    core::base::TSTask **m_pToReadTask;
+    core::base::TSTask **m_pToWriteTask;
+    core::base::TSTask **m_pNextWriteTask;
 
     int m_iWorkerCount;
-    int m_iQueueSize;
+    int m_iQueueMaxSize;
     std::vector<WorkerPtr> m_vWorker;
     std::unordered_map<int, TSServicePtr> m_hmService;
 
 public:
-    Engine();
-    ~Engine();
+    TSEngine();
+    ~TSEngine();
 
     void Init() override;
     void Run() override;

@@ -1,6 +1,6 @@
 /*
 * File: Engine.cpp
-* Class: Engine
+* Class: TSEngine
 * Created: 20211127
 * Author: SonTV
 */
@@ -15,38 +15,38 @@ namespace core
 {
 namespace op
 {
-Engine::Engine() : TSComponent(ENGINE_COMP)
-, m_pFirstTask(NULL), m_pLastTask(NULL), m_pNextTask(NULL)
+TSEngine::TSEngine() : TSComponent(ENGINE_COMP)
+, m_pToReadTask(NULL), m_pToWriteTask(NULL), m_pNextWriteTask(NULL)
 , m_pQueueBegin(NULL), m_pQueueEnd(NULL), m_iWorkerCount(DEFAULT_WORKER_COUNT)
-, m_iQueueSize(DEFAULT_QUEUE_SIZE)
+, m_iQueueMaxSize(DEFAULT_TASK_QUEUE_MAX_SIZE)
 {
 }
 
-Engine::~Engine()
+TSEngine::~TSEngine()
 {
     SAFE_DEL(m_pQueueBegin);
 }
 
-void Engine::Join()
+void TSEngine::Join()
 {
     // Do nothing
 }
 
-void Engine::Init()
+void TSEngine::Init()
 {
     nlohmann::json jConfig;
     if (util::Utils::LoadJsonFromFile(ENGINE_CONFIG_FILE, jConfig) == 0)
     {
         m_iWorkerCount = jConfig["worker_count"].get<int>();
-        m_iQueueSize = jConfig["queue_size"].get<int>();
+        m_iQueueMaxSize = jConfig["queue_size"].get<int>();
     }
 
-    m_pQueueBegin = (base::TSTask**) new base::TSTask*[m_iQueueSize];
-    m_pQueueEnd = m_pQueueBegin + m_iQueueSize;
+    m_pQueueBegin = (base::TSTask**) new base::TSTask*[m_iQueueMaxSize];
+    m_pQueueEnd = m_pQueueBegin + m_iQueueMaxSize;
 
-    m_pFirstTask = m_pQueueBegin;
-    m_pLastTask = m_pFirstTask;
-    m_pNextTask = m_pLastTask + 1;
+    m_pToReadTask = m_pQueueBegin;
+    m_pToWriteTask = m_pToReadTask;
+    m_pNextWriteTask = m_pToWriteTask + 1;
 
     for (int i = 0; i < m_iWorkerCount; i++)
     {
@@ -55,7 +55,7 @@ void Engine::Init()
     }
 }
 
-void Engine::RegisterService(TSServicePtr pService)
+void TSEngine::RegisterService(TSServicePtr pService)
 {
     if (pService)
     {
@@ -63,7 +63,7 @@ void Engine::RegisterService(TSServicePtr pService)
     }
 }
 
-void Engine::Run()
+void TSEngine::Run()
 {
     for (size_t i = 0; i < (size_t)m_iWorkerCount; i++)
     {
@@ -72,7 +72,7 @@ void Engine::Run()
     }
 }
 
-void Engine::ConsumeTask()
+void TSEngine::ConsumeTask()
 {
     // Get task
     auto pTask = GetTask();
@@ -102,34 +102,34 @@ void Engine::ConsumeTask()
     }
 }
 
-void Engine::PushTask(core::base::TSTask *pTask)
+void TSEngine::PushTask(core::base::TSTask *pTask)
 {
     bool bQueueIsEmpty = false;
 
     // Enqueue
     std::unique_lock<std::mutex> lckWrite(m_mtxQueueWrite);
-    while (m_pNextTask == m_pFirstTask)
+    while (m_pNextWriteTask == m_pToReadTask)
     {
         // Wait here if queue is full
         m_cvQueueFull.wait(lckWrite);
     }
 
     // Check queue is empty to notify empty condition
-    if (m_pFirstTask == m_pLastTask)
+    if (m_pToReadTask == m_pToWriteTask)
     {
         bQueueIsEmpty = true;
     }
 
     // Write task to the last
-    *m_pLastTask = pTask;
+    *m_pToWriteTask = pTask;
     // Move pointer to the next write
-    m_pLastTask = m_pNextTask;
+    m_pToWriteTask = m_pNextWriteTask;
     // Prepare for the next write location
-    m_pNextTask++;
+    m_pNextWriteTask++;
     // Round the queue
-    if (m_pNextTask == m_pQueueEnd)
+    if (m_pNextWriteTask == m_pQueueEnd)
     {
-        m_pNextTask = m_pQueueBegin;
+        m_pNextWriteTask = m_pQueueBegin;
     }
 
     // Notify empty condition if any waiting
@@ -139,34 +139,34 @@ void Engine::PushTask(core::base::TSTask *pTask)
     }
 }
 
-core::base::TSTask* Engine::GetTask()
+core::base::TSTask* TSEngine::GetTask()
 {
     // Dequeue
     bool bQueueIsFull = false;
     core::base::TSTask* pRetTask = NULL;
 
     std::unique_lock<std::mutex> lckRead(m_mtxQueueRead);
-    while (m_pFirstTask == m_pLastTask)
+    if (m_pToReadTask == m_pToWriteTask)
     {
         // Wait here if queue is empty
         m_cvQueueEmpty.wait(lckRead);
     }
 
     // Check queue is full to notify full condition
-    if (m_pFirstTask == m_pNextTask)
+    if (m_pNextWriteTask == m_pToReadTask)
     {
         bQueueIsFull = true;
     }
 
     // Get the first task
-    pRetTask = *m_pFirstTask;
+    pRetTask = *m_pToReadTask;
     // Move to the next read
-    m_pFirstTask++;
+    m_pToReadTask++;
 
     // Round the queue
-    if (m_pFirstTask == m_pQueueEnd)
+    if (m_pToReadTask == m_pQueueEnd)
     {
-        m_pFirstTask = m_pQueueBegin;
+        m_pToReadTask = m_pQueueBegin;
     }
 
     // Notify full condition if any wait

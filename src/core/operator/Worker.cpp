@@ -28,7 +28,7 @@ void Worker::Run()
     auto pAppInstance = AppManager::GetInstance();
     if (pAppInstance)
     {
-        auto pEngineComp = (core::op::Engine*) pAppInstance->GetComponent(ENGINE_COMP).get();
+        auto pEngineComp = (core::op::TSEngine*) pAppInstance->GetComponent(ENGINE_COMP).get();
         
         if (pEngineComp)
         {
@@ -36,7 +36,7 @@ void Worker::Run()
             {
                 if (pAppInstance->GetRunningMode() == RUNNING_MODE_SERVER)
                 {
-                    TSLOG2(tslog::LL_DEBUG, "Worker %d start", m_iThreadID);
+                    TSLOG2(tslog::LL_DEBUG, "Worker %d ready", m_iThreadID);
                 }
 
                 pEngineComp->ConsumeTask();

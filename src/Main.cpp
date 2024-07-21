@@ -29,7 +29,7 @@ int main(int argc, char **argv)
     int iRunningMode = -1;
     std::string strAlias = "";
     
-    if(argc > 1)
+    if (argc > 1)
     {
          for (int i = 0; i < argc ; i++)
         {
@@ -113,11 +113,16 @@ int main(int argc, char **argv)
 
         // Register app component
         pAppInstance->RegisterComponents();
+        if (pAppInstance->RegisterService() != 0)
+        {
+            TSLOG(tslog::LL_ERROR, "Cannot register services");
+            return -2;
+        }
         pAppInstance->Init();
         pAppInstance->Run();
     }
 
-    // pAppInstance->DestroyInstance();
+    pAppInstance->DestroyInstance();
     TSLOG(tslog::LL_DEBUG, "[App] Application stopped");
     return 0;
 }

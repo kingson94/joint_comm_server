@@ -75,7 +75,7 @@ void AppManager::SendMessageToEndpoint(const std::string &strMessage)
 
 void AppManager::RegisterComponents()
 {
-    std::shared_ptr<core::op::Engine> pEngine = std::make_shared<core::op::Engine>();
+    std::shared_ptr<core::op::TSEngine> pEngine = std::make_shared<core::op::TSEngine>();
     std::shared_ptr<tcp::TcpServer> pTcpServer = std::make_shared<tcp::TcpServer>();
 
     m_hmComponent[pEngine->GetID()] = pEngine;
@@ -99,12 +99,12 @@ int AppManager::RegisterService()
     nlohmann::json jServiceInfo;
     std::string strSerivceName = "";
     int iServiceID = -1;
-    core::op::Engine *pEngine = NULL;
+    core::op::TSEngine *pEngine = NULL;
     auto pEngineIter = m_hmComponent.find(ENGINE_COMP);
 
     if (pEngineIter != m_hmComponent.end())
     {
-        pEngine = (core::op::Engine*) pEngineIter->second.get();
+        pEngine = (core::op::TSEngine*) pEngineIter->second.get();
         if (!pEngine)
         {
             TSLOG2(tslog::LL_ERROR, "[App] Engine component not found");
@@ -127,7 +127,7 @@ int AppManager::RegisterService()
     
     try
     {
-        jServiceInfo = jServiceConfig["service_info"].array();
+        jServiceInfo = jServiceConfig["service_info"];
         // Loop and register service
         for (auto const &obValue : jServiceInfo)
         {
@@ -136,7 +136,6 @@ int AppManager::RegisterService()
             if (strSerivceName == "login")
             {
                 pService = std::make_shared<service::LoginService>();
-                
             }
 
             pService->SetID(obValue["id"]);

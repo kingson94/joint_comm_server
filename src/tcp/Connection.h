@@ -14,7 +14,7 @@ namespace core
 {
 namespace op
 {
-class Engine;
+class TSEngine;
 } // namespace base
 } // namespace core
 
@@ -28,7 +28,7 @@ private:
     int m_iFD;
     boost::mutex m_mtxWriteSocket;
     TcpServer* m_pTcpServer;
-    core::op::Engine* m_pEngine;
+    core::op::TSEngine* m_pEngine;
     TCPMessagePtr m_pMessage;
 
 public:

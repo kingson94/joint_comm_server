@@ -25,7 +25,7 @@
 #define RUNNING_MODE_SERVER 0
 
 // Engine
-#define DEFAULT_QUEUE_SIZE 1000
+#define DEFAULT_TASK_QUEUE_MAX_SIZE 1000
 #define DEFAULT_WORKER_COUNT 8 
 
 // Component

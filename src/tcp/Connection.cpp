@@ -26,7 +26,7 @@ Connection::Connection(const int &iFD) : m_iFD(iFD)
     if (pApp)
     {
         m_pTcpServer = (tcp::TcpServer*) pApp->GetComponent(TCP_SERVER_COMP).get();
-        m_pEngine = (core::op::Engine*) pApp->GetComponent(ENGINE_COMP).get();
+        m_pEngine = (core::op::TSEngine*) pApp->GetComponent(ENGINE_COMP).get();
     }
 }
 
